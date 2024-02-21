@@ -21,6 +21,15 @@ Partial Class PackwizEditor
     Private Sub InitializeComponent()
         components = New ComponentModel.Container()
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(PackwizEditor))
+        Dim SuperToolTip1 As DevExpress.Utils.SuperToolTip = New DevExpress.Utils.SuperToolTip()
+        Dim ToolTipTitleItem1 As DevExpress.Utils.ToolTipTitleItem = New DevExpress.Utils.ToolTipTitleItem()
+        Dim ToolTipItem1 As DevExpress.Utils.ToolTipItem = New DevExpress.Utils.ToolTipItem()
+        Dim SuperToolTip2 As DevExpress.Utils.SuperToolTip = New DevExpress.Utils.SuperToolTip()
+        Dim ToolTipTitleItem2 As DevExpress.Utils.ToolTipTitleItem = New DevExpress.Utils.ToolTipTitleItem()
+        Dim ToolTipItem2 As DevExpress.Utils.ToolTipItem = New DevExpress.Utils.ToolTipItem()
+        Dim ToolTipSeparatorItem1 As DevExpress.Utils.ToolTipSeparatorItem = New DevExpress.Utils.ToolTipSeparatorItem()
+        Dim ToolTipTitleItem3 As DevExpress.Utils.ToolTipTitleItem = New DevExpress.Utils.ToolTipTitleItem()
+        Dim ToolTipItem3 As DevExpress.Utils.ToolTipItem = New DevExpress.Utils.ToolTipItem()
         AddNewModBtn = New DevExpress.XtraBars.BarButtonItem()
         SettingsHeader = New DevExpress.XtraBars.BarHeaderItem()
         Bar4 = New DevExpress.XtraBars.Bar()
@@ -34,6 +43,10 @@ Partial Class PackwizEditor
         SearchEdit = New DevExpress.XtraBars.BarEditItem()
         RepositoryItemTextEdit1 = New DevExpress.XtraEditors.Repository.RepositoryItemTextEdit()
         ReloadModsButton = New DevExpress.XtraBars.BarButtonItem()
+        BarButtonItem1 = New DevExpress.XtraBars.BarButtonItem()
+        BarSubItem1 = New DevExpress.XtraBars.BarSubItem()
+        UpdateModButton = New DevExpress.XtraBars.BarButtonItem()
+        UpdateAllModsButton = New DevExpress.XtraBars.BarButtonItem()
         RibbonPage1 = New DevExpress.XtraBars.Ribbon.RibbonPage()
         RibbonPageGroup1 = New DevExpress.XtraBars.Ribbon.RibbonPageGroup()
         RepositoryItemBreadCrumbEdit1 = New DevExpress.XtraEditors.Repository.RepositoryItemBreadCrumbEdit()
@@ -132,10 +145,10 @@ Partial Class PackwizEditor
         ' RibbonControl1
         ' 
         RibbonControl1.ExpandCollapseItem.Id = 0
-        RibbonControl1.Items.AddRange(New DevExpress.XtraBars.BarItem() {RibbonControl1.ExpandCollapseItem, RibbonControl1.SearchEditItem, AddNewModBtn, SettingsHeader, RemoveMod, BarEditItem1, SearchEdit, ReloadModsButton})
+        RibbonControl1.Items.AddRange(New DevExpress.XtraBars.BarItem() {RibbonControl1.ExpandCollapseItem, RibbonControl1.SearchEditItem, AddNewModBtn, SettingsHeader, RemoveMod, BarEditItem1, SearchEdit, ReloadModsButton, BarButtonItem1, BarSubItem1, UpdateModButton, UpdateAllModsButton})
         RibbonControl1.Location = New Point(0, 0)
         RibbonControl1.Margin = New Padding(4, 2, 4, 2)
-        RibbonControl1.MaxItemId = 4
+        RibbonControl1.MaxItemId = 9
         RibbonControl1.Name = "RibbonControl1"
         RibbonControl1.Pages.AddRange(New DevExpress.XtraBars.Ribbon.RibbonPage() {RibbonPage1})
         RibbonControl1.RepositoryItems.AddRange(New DevExpress.XtraEditors.Repository.RepositoryItem() {RepositoryItemBreadCrumbEdit1, RepositoryItemLookUpEdit1, RepositoryItemTextEdit1})
@@ -181,9 +194,51 @@ Partial Class PackwizEditor
         ReloadModsButton.Caption = "Reload Mods"
         ReloadModsButton.Hint = "Reload The Mods Table"
         ReloadModsButton.Id = 3
-        ReloadModsButton.ImageOptions.SvgImage = CType(resources.GetObject("BarButtonItem1.ImageOptions.SvgImage"), DevExpress.Utils.Svg.SvgImage)
+        ReloadModsButton.ImageOptions.SvgImage = CType(resources.GetObject("ReloadModsButton.ImageOptions.SvgImage"), DevExpress.Utils.Svg.SvgImage)
         ReloadModsButton.Name = "ReloadModsButton"
         ReloadModsButton.RibbonStyle = DevExpress.XtraBars.Ribbon.RibbonItemStyles.SmallWithoutText
+        ' 
+        ' BarButtonItem1
+        ' 
+        BarButtonItem1.Caption = "Update Mod(s)"
+        BarButtonItem1.Hint = "Update the Selected Mod(s)"
+        BarButtonItem1.Id = 4
+        BarButtonItem1.Name = "BarButtonItem1"
+        ToolTipTitleItem1.Text = "Update Mod(s)"
+        ToolTipItem1.AllowHtmlText = DevExpress.Utils.DefaultBoolean.True
+        ToolTipItem1.Text = "Updates the selected mod(s)" & vbCrLf & vbCrLf & "Runs `packwiz update {mod_slug}`"
+        SuperToolTip1.Items.Add(ToolTipTitleItem1)
+        SuperToolTip1.Items.Add(ToolTipItem1)
+        BarButtonItem1.SuperTip = SuperToolTip1
+        ' 
+        ' BarSubItem1
+        ' 
+        BarSubItem1.Caption = "Update"
+        BarSubItem1.Id = 6
+        BarSubItem1.LinksPersistInfo.AddRange(New DevExpress.XtraBars.LinkPersistInfo() {New DevExpress.XtraBars.LinkPersistInfo(UpdateModButton), New DevExpress.XtraBars.LinkPersistInfo(UpdateAllModsButton)})
+        BarSubItem1.Name = "BarSubItem1"
+        ToolTipTitleItem2.Text = "Update mod(s)"
+        ToolTipItem2.Text = "Updates the selected mod(s)" & vbCrLf & vbCrLf & "Runs `packwiz update {mod_slug}`"
+        ToolTipTitleItem3.Text = "Update All Mods"
+        ToolTipItem3.Text = "Updates all mods" & vbCrLf & vbCrLf & "Runs `packwiz update --all`"
+        SuperToolTip2.Items.Add(ToolTipTitleItem2)
+        SuperToolTip2.Items.Add(ToolTipItem2)
+        SuperToolTip2.Items.Add(ToolTipSeparatorItem1)
+        SuperToolTip2.Items.Add(ToolTipTitleItem3)
+        SuperToolTip2.Items.Add(ToolTipItem3)
+        BarSubItem1.SuperTip = SuperToolTip2
+        ' 
+        ' UpdateModButton
+        ' 
+        UpdateModButton.Caption = "Update Mod(s)"
+        UpdateModButton.Id = 7
+        UpdateModButton.Name = "UpdateModButton"
+        ' 
+        ' UpdateAllModsButton
+        ' 
+        UpdateAllModsButton.Caption = "Update All Mods"
+        UpdateAllModsButton.Id = 8
+        UpdateAllModsButton.Name = "UpdateAllModsButton"
         ' 
         ' RibbonPage1
         ' 
@@ -195,6 +250,7 @@ Partial Class PackwizEditor
         RibbonPageGroup1.ItemLinks.Add(AddNewModBtn)
         RibbonPageGroup1.ItemLinks.Add(RemoveMod)
         RibbonPageGroup1.ItemLinks.Add(ReloadModsButton)
+        RibbonPageGroup1.ItemLinks.Add(BarSubItem1)
         RibbonPageGroup1.Name = "RibbonPageGroup1"
         RibbonPageGroup1.Text = "Tools"
         ' 
@@ -391,6 +447,10 @@ Partial Class PackwizEditor
     Friend WithEvents RepositoryItemTextEdit1 As DevExpress.XtraEditors.Repository.RepositoryItemTextEdit
     Friend WithEvents ReloadModsButton As DevExpress.XtraBars.BarButtonItem
     Friend WithEvents AdvancedModeToggle As DevExpress.XtraEditors.CheckEdit
+    Friend WithEvents BarButtonItem1 As DevExpress.XtraBars.BarButtonItem
+    Friend WithEvents BarSubItem1 As DevExpress.XtraBars.BarSubItem
+    Friend WithEvents UpdateModButton As DevExpress.XtraBars.BarButtonItem
+    Friend WithEvents UpdateAllModsButton As DevExpress.XtraBars.BarButtonItem
     'Friend WithEvents ModsPage As DevExpress.XtraBars.Navigation.TabNavigationPage
 
 End Class

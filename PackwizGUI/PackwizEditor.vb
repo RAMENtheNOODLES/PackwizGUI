@@ -224,4 +224,15 @@ Public Class PackwizEditor
     Private Sub ReloadModsButton_Clicked(sender As Object, e As DevExpress.XtraBars.ItemClickEventArgs) Handles ReloadModsButton.ItemClick
         ReloadMods()
     End Sub
+
+    Private Sub UpdateModButton_ItemClick(sender As Object, e As DevExpress.XtraBars.ItemClickEventArgs) Handles UpdateModButton.ItemClick
+        For Each Item As DataGridViewRow In modsTable.SelectedRows()
+            Debug.WriteLine($"Updating: {Item.Cells(1).Value}")
+            UpdateMods(Item.Cells(1).Value)
+        Next
+    End Sub
+
+    Private Sub UpdateAllModsButton_ItemClick(sender As Object, e As DevExpress.XtraBars.ItemClickEventArgs) Handles UpdateAllModsButton.ItemClick
+        UpdateAllMods()
+    End Sub
 End Class

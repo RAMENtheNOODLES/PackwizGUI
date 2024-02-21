@@ -76,9 +76,10 @@ Namespace PackwizUtils
         ''' <param name="client">The http client to use to send the request</param>
         ''' <param name="SearchQuery">The query used to search for a mod</param>
         ''' <returns></returns>
-        Public Shared Async Function DoSearch(modsTable As DataGridView, client As HttpClient, Optional SearchQuery As String = "") As Task
+        Public Shared Async Function DoSearch(modsTable As DataGridView, client As HttpClient,
+                                              Optional SearchQuery As String = "", Optional Limit As Integer = 10, Optional Offset As Integer = 0) As Task
             Try
-                Dim tmp = client.Send(GetRequestMessage($"https://api.modrinth.com/v2/search?query=""{SearchQuery}"""))
+                Dim tmp = client.Send(GetRequestMessage($"https://api.modrinth.com/v2/search?query=""{SearchQuery}""&limit={Limit}&offset={Offset}"))
                 Debug.WriteLine(tmp)
                 Dim responseBody As String = Await tmp.Content.ReadAsStringAsync()
                 'Debug.WriteLine(responseBody)
@@ -99,9 +100,10 @@ Namespace PackwizUtils
         ''' <param name="client">The http client to use to send the request</param>
         ''' <param name="SearchQuery">The query used to search for a mod</param>
         ''' <see cref="DoSearch(DataGridView, HttpClient, String)"/>
-        Public Shared Async Sub RefreshMods(modsTable As DataGridView, client As HttpClient, Optional SearchQuery As String = "")
+        Public Shared Async Sub RefreshMods(modsTable As DataGridView, client As HttpClient, Optional SearchQuery As String = "",
+                                            Optional Limit As Integer = 10, Optional Offset As Integer = 0)
             modsTable.Rows.Clear()
-            Await DoSearch(modsTable, client, SearchQuery)
+            Await DoSearch(modsTable, client, SearchQuery, Limit, Offset)
         End Sub
 
         ''' <summary>
@@ -419,6 +421,10 @@ Namespace PackwizUtils
 
         Public Sub UpdateMods(Optional slug As String = "")
             Call $"cd {My.Settings.ProjectDirectory} && {My.Settings.PackwizFile} update {slug} -y".RunCMD()
+        End Sub
+
+        Public Sub UpdateAllMods()
+            Call $"cd {My.Settings.ProjectDirectory} && {My.Settings.PackwizFile} update -a -y".RunCMD()
         End Sub
     End Module
 End Namespace
