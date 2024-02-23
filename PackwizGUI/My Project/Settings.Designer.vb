@@ -98,6 +98,15 @@ Namespace My
                 Me("AdvancedMode") = value
             End Set
         End Property
+        
+        <Global.System.Configuration.ApplicationScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("JDJhJDEwJGNCWTRncy5tUkVWRHNyT3J6dG0uV083MEgvTzhTM211ZXhlNDBZcDlHcFpwSlQzc2ozRTFp")>  _
+        Public ReadOnly Property CurseForgeAPIKey() As String
+            Get
+                Return CType(Me("CurseForgeAPIKey"),String)
+            End Get
+        End Property
     End Class
 End Namespace
 

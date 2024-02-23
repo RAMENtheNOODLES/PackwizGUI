@@ -7,6 +7,10 @@ Imports JsonSerializer = System.Text.Json.JsonSerializer
 
 Namespace PackwizUtils
     Public Class PackwizUtils
+        Private Shared ReadOnly Logger As NLog.Logger = NLog.LogManager.GetCurrentClassLogger()
+        Private Shared ReadOnly options As New JsonSerializerOptions With {
+                .WriteIndented = True
+            }
 
         ''' <summary>
         ''' Inits the mods table
@@ -16,7 +20,7 @@ Namespace PackwizUtils
         Public Shared Function InitModsTable(Optional EnableAdvancedMode As Boolean = False) As DataGridView
             Dim modsTable As New DataGridView
             With modsTable
-                .ColumnCount = 5
+                .ColumnCount = 6
                 .ReadOnly = True
                 .AllowUserToOrderColumns = False
                 .AllowDrop = False
@@ -41,6 +45,8 @@ Namespace PackwizUtils
                 .Columns(2).Name = "Mod Name"
                 .Columns(3).Name = "Author"
                 .Columns(4).Name = "Description"
+                .Columns(5).Name = "Provider"
+                .Columns(5).Visible = True
 
                 .SelectionMode = DataGridViewSelectionMode.FullRowSelect
                 .MultiSelect = True
@@ -50,12 +56,16 @@ Namespace PackwizUtils
             Return modsTable
         End Function
 
+        Private Shared Function DecodeCurseforgeAPIKey(key As String) As String
+            Return Text.Encoding.UTF8.GetString(Convert.FromBase64String(key))
+        End Function
+
         ''' <summary>
         ''' Sets the proper UserAgent headers and returns a get request back
         ''' </summary>
         ''' <param name="URI">the uri to send the get request to</param>
         ''' <returns></returns>
-        Public Shared Function GetRequestMessage(URI As String) As HttpRequestMessage
+        Public Shared Function GetRequestMessage(URI As String, Optional isCurseforge As Boolean = False) As HttpRequestMessage
             'User-Agent: github_username/project_name/1.56.0 (contact@launcher.com)
             Dim request = New HttpRequestMessage(HttpMethod.Get, URI)
 
@@ -63,10 +73,15 @@ Namespace PackwizUtils
 
             request.Headers.UserAgent.Add(New Headers.ProductInfoHeaderValue("PackwizGUI", $"{ver}"))
             request.Headers.UserAgent.Add(New Headers.ProductInfoHeaderValue($"(RAMENtheNOODLES/PackwizGUI [cookiejar499@gmail.com])"))
-
-            'Debug.WriteLine(request.Headers)
+            If isCurseforge Then
+                request.Headers.Add("x-api-key", DecodeCurseforgeAPIKey(My.Settings.CurseForgeAPIKey))
+            End If
 
             Return request
+        End Function
+
+        Public Shared Function GetMinecraftVersion() As String
+            Return ReadFromFile($"{My.Settings.ProjectDirectory}/pack.toml").Split("minecraft = """)(1).Split("""")(0)
         End Function
 
         ''' <summary>
@@ -79,17 +94,28 @@ Namespace PackwizUtils
         Public Shared Async Function DoSearch(modsTable As DataGridView, client As HttpClient,
                                               Optional SearchQuery As String = "", Optional Limit As Integer = 10, Optional Offset As Integer = 0) As Task
             Try
-                Dim tmp = client.Send(GetRequestMessage($"https://api.modrinth.com/v2/search?query=""{SearchQuery}""&limit={Limit}&offset={Offset}"))
-                Debug.WriteLine(tmp)
+                Dim firstHalf As ArrayList
+
+                Logger.Debug($"Minecraft Version: {GetMinecraftVersion()}")
+
+                Dim tmp = client.Send(GetRequestMessage($"https://api.modrinth.com/v2/search?query=""{SearchQuery}""&limit={Limit}&offset={Offset}" &
+                                                        $"&facets=[[""project_type:mod""],[""versions:{GetMinecraftVersion()}""]]"))
+                'Logger.Debug(tmp.RequestMessage)
                 Dim responseBody As String = Await tmp.Content.ReadAsStringAsync()
-                'Debug.WriteLine(responseBody)
                 Dim parseJson As JObject = JObject.Parse(responseBody)
-                AddNewMods(modsTable, ParseMods(parseJson))
+
+                firstHalf = ParseMods(parseJson)
+
+                tmp = client.Send(GetRequestMessage($"https://api.curseforge.com/v1/mods/search?gameId=432&gameVersion={GetMinecraftVersion()}" &
+                                                    $"&classId=6&searchFilter=""{SearchQuery}""&pageSize={Limit}&index={Offset}", True))
+                responseBody = Await tmp.Content.ReadAsStringAsync()
+                parseJson = JObject.Parse(responseBody)
+
+                firstHalf.AddRange(ParseModsFromCurseForge(parseJson))
+
+                AddNewMods(modsTable, firstHalf)
             Catch ex As Exception
-                Debug.WriteLine("Exception Caught!")
-                Debug.WriteLine($"Message : {ex.Message}")
-                Debug.WriteLine("Stack Trace:")
-                Debug.WriteLine($"{ex.StackTrace}")
+                Logger.Error(ex, "Exception Caught!")
             End Try
         End Function
 
@@ -115,13 +141,14 @@ Namespace PackwizUtils
         ''' <param name="title"></param>
         ''' <param name="author"></param>
         ''' <param name="description"></param>
-        Public Shared Sub AddNewMod(modsTable As DataGridView, modID As String, slug As String, title As String, author As String, description As String)
+        Public Shared Sub AddNewMod(modsTable As DataGridView, modID As String, slug As String, title As String, author As String, description As String, Optional provider As String = "modrinth")
             With modsTable.Rows(modsTable.Rows.Add())
                 .Cells(0).Value = modID
                 .Cells(1).Value = slug
                 .Cells(2).Value = title
                 .Cells(3).Value = author
                 .Cells(4).Value = description
+                .Cells(5).Value = provider
             End With
         End Sub
 
@@ -138,8 +165,9 @@ Namespace PackwizUtils
                 Dim title As String = item.Item("title")
                 Dim author As String = item.Item("author")
                 Dim description As String = item.Item("description")
+                Dim provider As String = item.GetValueOrDefault("provider", "modrinth")
 
-                PackwizUtils.AddNewMod(modsTable, modID, slug, title, author, description)
+                PackwizUtils.AddNewMod(modsTable, modID, slug, title, author, description, provider)
                 IndexMod(modID, slug, title, author, description)
             Next
         End Sub
@@ -152,8 +180,6 @@ Namespace PackwizUtils
         Public Shared Function ParseMods(JSON As JObject) As ArrayList
             Dim mods As New ArrayList()
 
-            'Debug.WriteLine(JSON.SelectToken("$.hits").ElementAt(0).ElementAt(0).ToString())
-
             Dim hits As JArray = JSON.SelectToken("$.hits")
 
             For i As Integer = 0 To hits.ToArray().Length - 1
@@ -163,7 +189,35 @@ Namespace PackwizUtils
                     {"slug", StripJSONKeyFromString(hits(i).ElementAt(2).ToString())},
                     {"author", StripJSONKeyFromString(hits(i).ElementAt(3).ToString())},
                     {"title", StripJSONKeyFromString(hits(i).ElementAt(4).ToString())},
-                    {"description", StripJSONKeyFromString(hits(i).ElementAt(5).ToString())}
+                    {"description", StripJSONKeyFromString(hits(i).ElementAt(5).ToString())},
+                    {"provider", "modrinth"}
+                }
+
+                mods.Add(tmp)
+            Next
+
+            Return mods
+        End Function
+
+        ''' <summary>
+        ''' Parses mods given from a JSON object and outputs an ArrayList
+        ''' </summary>
+        ''' <param name="JSON">The JSON object to parse</param>
+        ''' <returns>A parsed list of mods</returns>
+        Public Shared Function ParseModsFromCurseForge(JSON As JObject) As ArrayList
+            Dim mods As New ArrayList()
+
+            Dim hits As JArray = JSON.SelectToken("$.data")
+
+            For i As Integer = 0 To hits.ToArray().Length - 1
+                Dim tmp As New Dictionary(Of String, String) From {
+                    {"project_id", StripJSONKeyFromString(hits(i).ElementAt(0).ToString())},
+                    {"project_type", "mod"},
+                    {"slug", StripJSONKeyFromString(hits(i).ElementAt(3).ToString())},
+                    {"author", ""},
+                    {"title", StripJSONKeyFromString(hits(i).ElementAt(2).ToString())},
+                    {"description", StripJSONKeyFromString(hits(i).ElementAt(5).ToString())},
+                    {"provider", "curseforge"}
                 }
 
                 mods.Add(tmp)
@@ -178,38 +232,40 @@ Namespace PackwizUtils
         ''' <param name="URI">The uri to send the request to</param>
         ''' <param name="client">The Http Client to use to send the request</param>
         ''' <returns>The response as JSON</returns>
-        Public Shared Function ParseJson(URI As String, client As HttpClient) As JObject
+        Public Shared Function ParseJson(URI As String, client As HttpClient, Optional isCurseforge As Boolean = False) As JObject
             Dim responseBody As String
             Try
-                Dim tmp = client.Send(GetRequestMessage(URI))
+                Dim tmp = client.Send(GetRequestMessage(URI, isCurseforge))
                 responseBody = tmp.Content.ReadAsStringAsync().Result
-                Debug.WriteLine(responseBody)
+                Logger.Debug(JValue.Parse(responseBody).ToString(Formatting.Indented))
                 Return JObject.Parse(responseBody)
             Catch ex As Exception
-                Debug.WriteLine("Exception Caught!")
-                Debug.WriteLine($"Message : {ex.Message}")
-                Debug.WriteLine("Stack Trace:")
-                Debug.WriteLine($"{ex.StackTrace}")
+                Logger.Error(ex, "Exception Caught!")
             End Try
 
             Return Nothing
         End Function
 
-        Public Shared Function GetMissingModInfoFromCurseForge(ModID As String, client As HttpClient, Optional IsNumeric As Boolean = False) As Dictionary(Of String, String)
-            Dim result = ParseJson($"https://api.modrinth.com/v2/project/{ModID}", client)
+        Public Shared Function GetMissingModInfoFromCurseForge(ModID As String, client As HttpClient) As Dictionary(Of String, String)
+            Logger.Debug("Getting Missing Mod Info From CurseForge")
+            Dim result = ParseJson($"https://api.curseforge.com/v1/mods/{ModID}", client, True)
             Try
                 Dim tmp As New Dictionary(Of String, String) From {
-                    {"slug", result.SelectToken("slug")},
-                    {"project_type", result.SelectToken("project_type")},
-                    {"description", result.SelectToken("description")}
+                    {"slug", result.SelectToken("data").SelectToken("slug")},
+                    {"project_type", "mod"},
+                    {"description", result.SelectToken("data").SelectToken("summary")}
                 }
 
                 Return tmp
             Catch ex As Exception
-                Debug.WriteLine($"Mod ID: {ModID}")
+                Logger.Error(ex, $"Error getting missing information from {ModID}")
             End Try
 
-            Return Nothing
+            Return New Dictionary(Of String, String) From {
+                    {"slug", ""},
+                    {"project_type", "mod"},
+                    {"description", ""}
+            }
         End Function
 
         ''' <summary>
@@ -221,13 +277,7 @@ Namespace PackwizUtils
         ''' <returns>A dictionary containing the remaining missing information</returns>
         Public Shared Function GetMissingModInfo(ModID As String, client As HttpClient, Optional IsNumeric As Boolean = False) As Dictionary(Of String, String)
             If IsNumeric Then
-                Dim tmp2 As New Dictionary(Of String, String) From {
-                    {"slug", ""},
-                    {"project_type", ""},
-                    {"description", ""}
-                }
-
-                Return tmp2
+                Return GetMissingModInfoFromCurseForge(ModID, client)
             End If
 
             Dim result = ParseJson($"https://api.modrinth.com/v2/project/{ModID}", client)
@@ -240,7 +290,8 @@ Namespace PackwizUtils
 
                 Return tmp
             Catch ex As Exception
-                Debug.WriteLine($"Mod ID: {ModID}")
+                Logger.Warn($"Mod ID: {ModID}")
+                Logger.Error(ex, "Exception Caught!")
             End Try
 
             Return Nothing
@@ -277,7 +328,9 @@ Namespace PackwizUtils
                 Return My.Computer.FileSystem.ReadAllText(file)
             Catch ex As Exception
                 WriteToFile(file, "")
+                Logger.Warn(ex, "Could not read file...")
             End Try
+            Return ""
         End Function
 
         Public Shared Function GetIndexedMods() As Mods
@@ -299,6 +352,7 @@ Namespace PackwizUtils
                     result = GetIndexedMods()._Mod.ContainsKey(modId)
                 End If
             Catch ex As Exception
+                Logger.Info($"Mod {modId} is not indexed...")
                 result = False
             End Try
 
@@ -315,19 +369,12 @@ Namespace PackwizUtils
         End Function
 
         Public Shared Sub SerializeIndex(ModsIndex As Mods)
-            Dim options As New JsonSerializerOptions With {
-                .WriteIndented = True
-            }
             Dim jsonString = JsonSerializer.Serialize(ModsIndex, options)
             WriteToFile(My.Settings.ProjectDirectory & My.Settings.ModIndexFileName, jsonString)
         End Sub
 
         Public Shared Sub AddToIndexedMods(ModToAdd As _Mod, modID As String)
-            Dim updatedMods As Mods = GetIndexedMods()
-
-            If updatedMods Is Nothing Then
-                updatedMods = New Mods(New Dictionary(Of String, _Mod))
-            End If
+            Dim updatedMods As Mods = If(GetIndexedMods(), New Mods(New Dictionary(Of String, _Mod)))
 
             updatedMods._Mod.Add(modID, ModToAdd)
 
@@ -339,13 +386,7 @@ Namespace PackwizUtils
                 Return
             End If
 
-            Dim newSlug As String = slug
-
-            If IsNumeric(modID) Then
-                newSlug = title.Replace(" ", "-").ToLower()
-            End If
-
-            Dim ModToIndex As New _Mod(modID, newSlug, title, author, description)
+            Dim ModToIndex As New _Mod(modID, slug, title, author, description)
 
             AddToIndexedMods(ModToIndex, modID)
         End Sub
@@ -391,20 +432,26 @@ Namespace PackwizUtils
     End Class
 
     Public Module PackwizCommands
+        Private ReadOnly Logger As NLog.Logger = NLog.LogManager.GetCurrentClassLogger()
+
         Public Sub RemoveMod(slug As String)
             Call $"cd {My.Settings.ProjectDirectory} && {My.Settings.PackwizFile} remove {slug} -y; {My.Settings.PackwizFile} refresh".RunCMD()
         End Sub
 
         Public Sub AddMod(slug As String, Optional fromModrinth As Boolean = True)
+            '"C:\Users\romme\Documents\Fogger-Pack"
+            '"C:\Users\romme\Downloads\Windows 64-bit\packwiz.exe"
+            Logger.Debug($"Installing: {slug}, from {If(fromModrinth, "modrinth", "curseforge")}")
             If fromModrinth Then
-                Debug.WriteLine({My.Settings.PackwizFile})
-                Call $"cd {My.Settings.ProjectDirectory} && {My.Settings.PackwizFile} modrinth add {slug} -y".RunCMD()
-                RefreshPackwiz()
+                Call $"cd {My.Settings.ProjectDirectory} && {My.Settings.PackwizFile} modrinth add {slug} -y".RunCMD(False, True)
+            Else
+                Call $"cd {My.Settings.ProjectDirectory} && {My.Settings.PackwizFile} curseforge add {slug} -y".RunCMD(False, True)
             End If
+            RefreshPackwiz()
         End Sub
 
         Public Sub RefreshPackwiz()
-            Call $"cd {My.Settings.ProjectDirectory} && {My.Settings.PackwizFile} refresh".RunCMD()
+            Call $"cd {My.Settings.ProjectDirectory} && {My.Settings.PackwizFile} refresh".RunCMD(False, True)
         End Sub
 
         Public Sub InitPackwiz()

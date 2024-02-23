@@ -3,6 +3,8 @@ Imports PackwizGUI.PackwizUtils.PackwizUtils
 Imports PackwizGUI.PackwizUtils.PackwizCommands
 
 Public Class AddNewMod
+    Private Shared ReadOnly Logger As NLog.Logger = NLog.LogManager.GetCurrentClassLogger()
+
     ReadOnly client As HttpClient = New HttpClient()
     Dim modsTable As New DataGridView
 
@@ -21,9 +23,9 @@ Public Class AddNewMod
 
     Private Sub SimpleButton1_Click(sender As Object, e As EventArgs) Handles InstallModButton.Click
         For Each Item As DataGridViewRow In modsTable.SelectedRows()
-            Debug.WriteLine($"Downloading: {Item.Cells(0).Value}")
-            AddMod(Item.Cells(0).Value)
-            PackwizUtils.PackwizUtils.AddNewMod(PackwizEditor.modsTable, Item.Cells(0).Value, Item.Cells(1).Value, Item.Cells(2).Value, Item.Cells(3).Value, Item.Cells(4).Value)
+            Logger.Debug($"Downloading: {Item.Cells(0).Value}")
+            AddMod(Item.Cells(0).Value, Item.Cells(5).Value IsNot "curseforge")
+            PackwizUtils.PackwizUtils.AddNewMod(PackwizEditor.modsTable, Item.Cells(0).Value, Item.Cells(1).Value, Item.Cells(2).Value, Item.Cells(3).Value, Item.Cells(4).Value, Item.Cells(5).Value)
         Next
     End Sub
 

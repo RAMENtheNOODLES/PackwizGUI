@@ -6,6 +6,8 @@ Imports PackwizGUI.PackwizUtils
 Imports DevExpress.XtraRichEdit.Model
 
 Public Class PackwizEditor
+    Private Shared ReadOnly Logger As NLog.Logger = NLog.LogManager.GetCurrentClassLogger()
+
     Public modsTable As New DataGridView
     Dim loadScreen As New LoadScreen
     Dim LoadedItems As DataGridViewRow()
@@ -92,25 +94,32 @@ Public Class PackwizEditor
             Else
                 i += 1
                 If item.Contains(".jar") Then
+                    Dim name As String = My.Computer.FileSystem.GetName(item).Replace(".jar", "")
                     Dim tmp As New Dictionary(Of String, String) From {
                                         {"project_id", ""},
                                         {"project_type", ""},
-                                        {"slug", My.Computer.FileSystem.GetName(item)},
+                                        {"slug", name},
                                         {"author", ""},
-                                        {"title", My.Computer.FileSystem.GetName(item)},
+                                        {"title", name},
                                         {"description", ""}
                     }
                     IndexMod(tmp)
                     mods.Add(tmp)
                 Else
-                    Dim fileReader = My.Computer.FileSystem.ReadAllText(item).Split(vbLf)
+                    Dim unsplitFileReader = My.Computer.FileSystem.ReadAllText(item)
+                    Dim fileReader = unsplitFileReader.Split(vbLf)
 
                     Dim proj_id As String
+                    Dim projIdStartingLine As Integer = 11
+
+                    If unsplitFileReader.Contains("curseforge") Then
+                        projIdStartingLine = 12
+                    End If
 
                     Try
-                        proj_id = fileReader(11).Split(" = ")(1).Replace("""", "")
+                        proj_id = fileReader(projIdStartingLine).Split(" = ")(1).Replace("""", "")
                     Catch ex As Exception
-                        proj_id = fileReader(12).Split(" = ")(1).Replace("""", "")
+                        proj_id = fileReader(projIdStartingLine + 1).Split(" = ")(1).Replace("""", "")
                     End Try
 
                     If CheckIfModIsIndexed(proj_id) Then
@@ -131,6 +140,10 @@ Public Class PackwizEditor
                             {"title", fileReader(0).Split(" = ")(1).Replace("""", "")}
                         }
 
+                        If unsplitFileReader.Contains("curseforge") Then
+                            Logger.Debug("test")
+                        End If
+
                         Dim newMod = tmp.Concat(GetMissingModInfo(proj_id, client, IsNumeric(proj_id))).ToDictionary()
 
                         IndexMod(newMod)
@@ -138,7 +151,7 @@ Public Class PackwizEditor
                         mods.Add(newMod)
                     End If
                 End If
-                Debug.WriteLine(item)
+                Logger.Debug(item)
 
                 worker.ReportProgress(i / installedMods.Count * 100)
 
@@ -176,7 +189,7 @@ Public Class PackwizEditor
 
     Private Sub RemoveMod_ItemClick(sender As Object, e As DevExpress.XtraBars.ItemClickEventArgs) Handles RemoveMod.ItemClick
         For Each Item As DataGridViewRow In modsTable.SelectedRows()
-            Debug.WriteLine($"Removing: {Item.Cells(1).Value}")
+            Logger.Debug($"Removing: {Item.Cells(1).Value}")
             PackwizCommands.RemoveMod(Item.Cells(1).Value)
             UnindexMod(Item.Cells(0).Value)
             modsTable.Rows.Remove(Item)
@@ -197,12 +210,12 @@ Public Class PackwizEditor
     Private Sub SearchEdit_EditValueChanged(sender As Object, e As EventArgs) Handles SearchEdit.EditValueChanged
         Dim i As Integer = 0
 
-        Debug.WriteLine($"Total Number of Rows: {modsTable.Rows.Count}")
+        Logger.Debug($"Total Number of Rows: {modsTable.Rows.Count}")
 
         For Each item As _Mod In GetIndexedMods()._Mod.Values
             'Dim rowIndex As Integer = modsTable.Rows.IndexOf(GetRowBasedOnSlug(item.Slug))
 
-            Debug.WriteLine($"Row {i}: {item.Title.Contains(SearchEdit.EditValue.ToString())}")
+            Logger.Debug($"Row {i}: {item.Title.Contains(SearchEdit.EditValue.ToString())}")
 
             modsTable.Rows(i).Visible = item.Title.ToLower().Contains(SearchEdit.EditValue.ToString().ToLower())
             i += 1
@@ -227,12 +240,16 @@ Public Class PackwizEditor
 
     Private Sub UpdateModButton_ItemClick(sender As Object, e As DevExpress.XtraBars.ItemClickEventArgs) Handles UpdateModButton.ItemClick
         For Each Item As DataGridViewRow In modsTable.SelectedRows()
-            Debug.WriteLine($"Updating: {Item.Cells(1).Value}")
+            Logger.Debug($"Updating: {Item.Cells(1).Value}")
             UpdateMods(Item.Cells(1).Value)
         Next
     End Sub
 
     Private Sub UpdateAllModsButton_ItemClick(sender As Object, e As DevExpress.XtraBars.ItemClickEventArgs) Handles UpdateAllModsButton.ItemClick
         UpdateAllMods()
+    End Sub
+
+    Private Sub PackwizEditor_Closing(sender As Object, e As CancelEventArgs) Handles MyBase.Closing
+        NLog.LogManager.Shutdown()
     End Sub
 End Class

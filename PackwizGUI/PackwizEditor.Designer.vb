@@ -107,13 +107,13 @@ Partial Class PackwizEditor
         TabPane1.Controls.Add(SettingsPage)
         TabPane1.Controls.Add(TabNavigationPage1)
         TabPane1.Dock = DockStyle.Fill
-        TabPane1.Location = New Point(0, 242)
-        TabPane1.Margin = New Padding(4, 2, 4, 2)
+        TabPane1.Location = New Point(0, 201)
+        TabPane1.Margin = New Padding(3, 2, 3, 2)
         TabPane1.Name = "TabPane1"
         TabPane1.Pages.AddRange(New DevExpress.XtraBars.Navigation.NavigationPageBase() {TabNavigationPage1, SettingsPage})
-        TabPane1.RegularSize = New Size(1208, 307)
+        TabPane1.RegularSize = New Size(1035, 245)
         TabPane1.SelectedPage = TabNavigationPage1
-        TabPane1.Size = New Size(1208, 307)
+        TabPane1.Size = New Size(1035, 245)
         TabPane1.TabIndex = 14
         TabPane1.Text = "TabPane1"
         ' 
@@ -129,30 +129,33 @@ Partial Class PackwizEditor
         SettingsPage.Controls.Add(SelectFileBtn)
         SettingsPage.Controls.Add(LabelControl1)
         SettingsPage.Controls.Add(PackwizFileEdit)
-        SettingsPage.Margin = New Padding(4, 2, 4, 2)
+        SettingsPage.Margin = New Padding(3, 2, 3, 2)
         SettingsPage.Name = "SettingsPage"
-        SettingsPage.Size = New Size(1208, 256)
+        SettingsPage.Size = New Size(1035, 204)
         ' 
         ' AdvancedModeToggle
         ' 
-        AdvancedModeToggle.Location = New Point(113, 82)
+        AdvancedModeToggle.Location = New Point(97, 67)
+        AdvancedModeToggle.Margin = New Padding(3, 2, 3, 2)
         AdvancedModeToggle.MenuManager = RibbonControl1
         AdvancedModeToggle.Name = "AdvancedModeToggle"
         AdvancedModeToggle.Properties.Caption = "Advanced Mode"
-        AdvancedModeToggle.Size = New Size(156, 26)
+        AdvancedModeToggle.Size = New Size(134, 22)
         AdvancedModeToggle.TabIndex = 8
         ' 
         ' RibbonControl1
         ' 
+        RibbonControl1.EmptyAreaImageOptions.ImagePadding = New Padding(26, 24, 26, 24)
         RibbonControl1.ExpandCollapseItem.Id = 0
         RibbonControl1.Items.AddRange(New DevExpress.XtraBars.BarItem() {RibbonControl1.ExpandCollapseItem, RibbonControl1.SearchEditItem, AddNewModBtn, SettingsHeader, RemoveMod, BarEditItem1, SearchEdit, ReloadModsButton, BarButtonItem1, BarSubItem1, UpdateModButton, UpdateAllModsButton})
         RibbonControl1.Location = New Point(0, 0)
-        RibbonControl1.Margin = New Padding(4, 2, 4, 2)
+        RibbonControl1.Margin = New Padding(3, 2, 3, 2)
         RibbonControl1.MaxItemId = 9
         RibbonControl1.Name = "RibbonControl1"
+        RibbonControl1.OptionsMenuMinWidth = 283
         RibbonControl1.Pages.AddRange(New DevExpress.XtraBars.Ribbon.RibbonPage() {RibbonPage1})
         RibbonControl1.RepositoryItems.AddRange(New DevExpress.XtraEditors.Repository.RepositoryItem() {RepositoryItemBreadCrumbEdit1, RepositoryItemLookUpEdit1, RepositoryItemTextEdit1})
-        RibbonControl1.Size = New Size(1208, 242)
+        RibbonControl1.Size = New Size(1035, 201)
         RibbonControl1.StatusBar = RibbonStatusBar1
         ' 
         ' RemoveMod
@@ -263,46 +266,46 @@ Partial Class PackwizEditor
         ' RibbonStatusBar1
         ' 
         RibbonStatusBar1.ItemLinks.Add(SearchEdit)
-        RibbonStatusBar1.Location = New Point(0, 549)
-        RibbonStatusBar1.Margin = New Padding(4, 2, 4, 2)
+        RibbonStatusBar1.Location = New Point(0, 446)
+        RibbonStatusBar1.Margin = New Padding(3, 2, 3, 2)
         RibbonStatusBar1.Name = "RibbonStatusBar1"
         RibbonStatusBar1.Ribbon = RibbonControl1
-        RibbonStatusBar1.Size = New Size(1208, 45)
+        RibbonStatusBar1.Size = New Size(1035, 37)
         ' 
         ' ResetModCacheButton
         ' 
         ResetModCacheButton.Anchor = AnchorStyles.Bottom Or AnchorStyles.Right
         ResetModCacheButton.ImageOptions.SvgImage = CType(resources.GetObject("ResetModCacheButton.ImageOptions.SvgImage"), DevExpress.Utils.Svg.SvgImage)
-        ResetModCacheButton.Location = New Point(999, 144)
-        ResetModCacheButton.Margin = New Padding(4, 2, 4, 2)
+        ResetModCacheButton.Location = New Point(856, 113)
+        ResetModCacheButton.Margin = New Padding(3, 2, 3, 2)
         ResetModCacheButton.Name = "ResetModCacheButton"
-        ResetModCacheButton.Size = New Size(197, 36)
+        ResetModCacheButton.Size = New Size(169, 29)
         ResetModCacheButton.TabIndex = 7
         ResetModCacheButton.Text = "Reset Mod Cache"
         ' 
         ' OpenProjectDirectoryFolder
         ' 
         OpenProjectDirectoryFolder.ImageOptions.SvgImage = CType(resources.GetObject("OpenProjectDirectoryFolder.ImageOptions.SvgImage"), DevExpress.Utils.Svg.SvgImage)
-        OpenProjectDirectoryFolder.Location = New Point(275, 41)
-        OpenProjectDirectoryFolder.Margin = New Padding(4, 2, 4, 2)
+        OpenProjectDirectoryFolder.Location = New Point(236, 33)
+        OpenProjectDirectoryFolder.Margin = New Padding(3, 2, 3, 2)
         OpenProjectDirectoryFolder.Name = "OpenProjectDirectoryFolder"
-        OpenProjectDirectoryFolder.Size = New Size(46, 36)
+        OpenProjectDirectoryFolder.Size = New Size(39, 29)
         OpenProjectDirectoryFolder.TabIndex = 6
         ' 
         ' ProjectDirectoryEdit
         ' 
-        ProjectDirectoryEdit.Location = New Point(113, 43)
-        ProjectDirectoryEdit.Margin = New Padding(4, 2, 4, 2)
+        ProjectDirectoryEdit.Location = New Point(97, 35)
+        ProjectDirectoryEdit.Margin = New Padding(3, 2, 3, 2)
         ProjectDirectoryEdit.Name = "ProjectDirectoryEdit"
-        ProjectDirectoryEdit.Size = New Size(156, 34)
+        ProjectDirectoryEdit.Size = New Size(134, 28)
         ProjectDirectoryEdit.TabIndex = 5
         ' 
         ' LabelControl2
         ' 
-        LabelControl2.Location = New Point(12, 52)
-        LabelControl2.Margin = New Padding(4, 2, 4, 2)
+        LabelControl2.Location = New Point(10, 42)
+        LabelControl2.Margin = New Padding(3, 2, 3, 2)
         LabelControl2.Name = "LabelControl2"
-        LabelControl2.Size = New Size(95, 16)
+        LabelControl2.Size = New Size(81, 13)
         LabelControl2.TabIndex = 4
         LabelControl2.Text = "Project Directory"
         ' 
@@ -310,54 +313,54 @@ Partial Class PackwizEditor
         ' 
         SaveSettingsBtn.Anchor = AnchorStyles.Bottom Or AnchorStyles.Right
         SaveSettingsBtn.ImageOptions.SvgImage = CType(resources.GetObject("SaveSettingsBtn.ImageOptions.SvgImage"), DevExpress.Utils.Svg.SvgImage)
-        SaveSettingsBtn.Location = New Point(999, 192)
-        SaveSettingsBtn.Margin = New Padding(4, 2, 4, 2)
+        SaveSettingsBtn.Location = New Point(856, 152)
+        SaveSettingsBtn.Margin = New Padding(3, 2, 3, 2)
         SaveSettingsBtn.Name = "SaveSettingsBtn"
-        SaveSettingsBtn.Size = New Size(197, 36)
+        SaveSettingsBtn.Size = New Size(169, 29)
         SaveSettingsBtn.TabIndex = 3
         SaveSettingsBtn.Text = "Save Settings"
         ' 
         ' SelectFileBtn
         ' 
         SelectFileBtn.ImageOptions.SvgImage = CType(resources.GetObject("SelectFileBtn.ImageOptions.SvgImage"), DevExpress.Utils.Svg.SvgImage)
-        SelectFileBtn.Location = New Point(275, 4)
-        SelectFileBtn.Margin = New Padding(4, 2, 4, 2)
+        SelectFileBtn.Location = New Point(236, 3)
+        SelectFileBtn.Margin = New Padding(3, 2, 3, 2)
         SelectFileBtn.Name = "SelectFileBtn"
-        SelectFileBtn.Size = New Size(46, 36)
+        SelectFileBtn.Size = New Size(39, 29)
         SelectFileBtn.TabIndex = 2
         ' 
         ' LabelControl1
         ' 
-        LabelControl1.Location = New Point(12, 12)
-        LabelControl1.Margin = New Padding(4, 2, 4, 2)
+        LabelControl1.Location = New Point(10, 10)
+        LabelControl1.Margin = New Padding(3, 2, 3, 2)
         LabelControl1.Name = "LabelControl1"
-        LabelControl1.Size = New Size(69, 16)
+        LabelControl1.Size = New Size(56, 13)
         LabelControl1.TabIndex = 1
         LabelControl1.Text = "Packwiz File"
         ' 
         ' PackwizFileEdit
         ' 
-        PackwizFileEdit.Location = New Point(113, 5)
-        PackwizFileEdit.Margin = New Padding(4, 2, 4, 2)
+        PackwizFileEdit.Location = New Point(97, 4)
+        PackwizFileEdit.Margin = New Padding(3, 2, 3, 2)
         PackwizFileEdit.Name = "PackwizFileEdit"
-        PackwizFileEdit.Size = New Size(156, 34)
+        PackwizFileEdit.Size = New Size(134, 28)
         PackwizFileEdit.TabIndex = 0
         ' 
         ' TabNavigationPage1
         ' 
         TabNavigationPage1.Caption = "Mod Page"
         TabNavigationPage1.Controls.Add(PanelControl1)
-        TabNavigationPage1.Margin = New Padding(4, 2, 4, 2)
+        TabNavigationPage1.Margin = New Padding(3, 2, 3, 2)
         TabNavigationPage1.Name = "TabNavigationPage1"
-        TabNavigationPage1.Size = New Size(1208, 256)
+        TabNavigationPage1.Size = New Size(1035, 204)
         ' 
         ' PanelControl1
         ' 
         PanelControl1.Dock = DockStyle.Fill
         PanelControl1.Location = New Point(0, 0)
-        PanelControl1.Margin = New Padding(4, 2, 4, 2)
+        PanelControl1.Margin = New Padding(3, 2, 3, 2)
         PanelControl1.Name = "PanelControl1"
-        PanelControl1.Size = New Size(1208, 256)
+        PanelControl1.Size = New Size(1035, 204)
         PanelControl1.TabIndex = 0
         ' 
         ' SidePanel1
@@ -386,13 +389,12 @@ Partial Class PackwizEditor
         ' 
         ' PackwizEditor
         ' 
-        AutoScaleDimensions = New SizeF(7F, 16F)
+        AutoScaleDimensions = New SizeF(6F, 13F)
         AutoScaleMode = AutoScaleMode.Font
-        ClientSize = New Size(1208, 594)
+        ClientSize = New Size(1035, 483)
         Controls.Add(TabPane1)
         Controls.Add(RibbonStatusBar1)
         Controls.Add(RibbonControl1)
-        Margin = New Padding(4)
         Name = "PackwizEditor"
         Ribbon = RibbonControl1
         StatusBar = RibbonStatusBar1

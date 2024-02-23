@@ -24,13 +24,13 @@ Partial Class AddNewMod
         SearchForModBtn = New DevExpress.XtraEditors.SimpleButton()
         PanelControl1 = New DevExpress.XtraEditors.PanelControl()
         PanelControl3 = New DevExpress.XtraEditors.PanelControl()
+        NextButton = New DevExpress.XtraEditors.SimpleButton()
         LabelControl2 = New DevExpress.XtraEditors.LabelControl()
         LabelControl1 = New DevExpress.XtraEditors.LabelControl()
         PreviousButton = New DevExpress.XtraEditors.SimpleButton()
         ModsShownEdit = New DevExpress.XtraEditors.TextEdit()
         InstallModButton = New DevExpress.XtraEditors.SimpleButton()
         PanelControl2 = New DevExpress.XtraEditors.PanelControl()
-        NextButton = New DevExpress.XtraEditors.SimpleButton()
         CType(ModNameEdit.Properties, ComponentModel.ISupportInitialize).BeginInit()
         CType(PanelControl1, ComponentModel.ISupportInitialize).BeginInit()
         PanelControl1.SuspendLayout()
@@ -46,8 +46,6 @@ Partial Class AddNewMod
         ModNameEdit.Location = New Point(5, 5)
         ModNameEdit.Margin = New Padding(3, 2, 3, 2)
         ModNameEdit.Name = "ModNameEdit"
-        ModNameEdit.Properties.MaskSettings.Set("MaskManagerType", GetType(DevExpress.Data.Mask.RegExpMaskManager))
-        ModNameEdit.Properties.MaskSettings.Set("mask", ".+")
         ModNameEdit.Size = New Size(134, 28)
         ModNameEdit.TabIndex = 0
         ModNameEdit.ToolTip = "Name of the Mod you want to add"
@@ -69,7 +67,7 @@ Partial Class AddNewMod
         PanelControl1.Location = New Point(0, 38)
         PanelControl1.Margin = New Padding(3, 2, 3, 2)
         PanelControl1.Name = "PanelControl1"
-        PanelControl1.Size = New Size(1146, 448)
+        PanelControl1.Size = New Size(1146, 444)
         PanelControl1.TabIndex = 2
         ' 
         ' PanelControl3
@@ -80,10 +78,18 @@ Partial Class AddNewMod
         PanelControl3.Controls.Add(PreviousButton)
         PanelControl3.Controls.Add(ModsShownEdit)
         PanelControl3.Dock = DockStyle.Bottom
-        PanelControl3.Location = New Point(2, 408)
+        PanelControl3.Location = New Point(2, 404)
         PanelControl3.Name = "PanelControl3"
         PanelControl3.Size = New Size(1142, 38)
         PanelControl3.TabIndex = 9
+        ' 
+        ' NextButton
+        ' 
+        NextButton.Location = New Point(211, 6)
+        NextButton.Name = "NextButton"
+        NextButton.Size = New Size(40, 23)
+        NextButton.TabIndex = 8
+        NextButton.Text = "Next"
         ' 
         ' LabelControl2
         ' 
@@ -112,7 +118,7 @@ Partial Class AddNewMod
         ' 
         ' ModsShownEdit
         ' 
-        ModsShownEdit.EditValue = "1"
+        ModsShownEdit.EditValue = "50"
         ModsShownEdit.Location = New Point(71, 4)
         ModsShownEdit.Margin = New Padding(3, 2, 3, 2)
         ModsShownEdit.Name = "ModsShownEdit"
@@ -146,19 +152,11 @@ Partial Class AddNewMod
         PanelControl2.Size = New Size(1146, 38)
         PanelControl2.TabIndex = 8
         ' 
-        ' NextButton
-        ' 
-        NextButton.Location = New Point(211, 6)
-        NextButton.Name = "NextButton"
-        NextButton.Size = New Size(40, 23)
-        NextButton.TabIndex = 8
-        NextButton.Text = "Next"
-        ' 
         ' AddNewMod
         ' 
         AutoScaleDimensions = New SizeF(6F, 13F)
         AutoScaleMode = AutoScaleMode.Font
-        ClientSize = New Size(1146, 486)
+        ClientSize = New Size(1146, 482)
         Controls.Add(PanelControl1)
         Controls.Add(PanelControl2)
         Margin = New Padding(3, 2, 3, 2)

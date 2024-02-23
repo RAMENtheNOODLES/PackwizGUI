@@ -14,5 +14,8 @@
     <Setting Name="AdvancedMode" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
     </Setting>
+    <Setting Name="CurseForgeAPIKey" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">JDJhJDEwJGNCWTRncy5tUkVWRHNyT3J6dG0uV083MEgvTzhTM211ZXhlNDBZcDlHcFpwSlQzc2ozRTFp</Value>
+    </Setting>
   </Settings>
 </SettingsFile>
