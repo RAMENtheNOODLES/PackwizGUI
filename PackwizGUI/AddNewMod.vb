@@ -1,5 +1,5 @@
 ﻿Imports System.Net.Http
-Imports PackwizGUI.PackwizUtils.PackwizUtils
+Imports PackwizGUI.PackwizUtils.Utils
 Imports PackwizGUI.PackwizUtils.PackwizCommands
 
 Public Class AddNewMod
@@ -25,7 +25,7 @@ Public Class AddNewMod
         For Each Item As DataGridViewRow In modsTable.SelectedRows()
             Logger.Debug($"Downloading: {Item.Cells(0).Value}")
             AddMod(Item.Cells(0).Value, Item.Cells(5).Value IsNot "curseforge")
-            PackwizUtils.PackwizUtils.AddNewMod(PackwizEditor.modsTable, Item.Cells(0).Value, Item.Cells(1).Value, Item.Cells(2).Value, Item.Cells(3).Value, Item.Cells(4).Value, Item.Cells(5).Value)
+            PackwizUtils.AddNewMod(PackwizEditor.modsList, Item.Cells(0).Value, Item.Cells(1).Value, Item.Cells(2).Value, Item.Cells(3).Value, Item.Cells(4).Value, Item.Cells(5).Value)
         Next
     End Sub
 

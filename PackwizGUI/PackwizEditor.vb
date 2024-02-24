@@ -1,14 +1,17 @@
 ﻿Imports System.ComponentModel
 Imports System.Net.Http
-Imports PackwizGUI.PackwizUtils.PackwizUtils
+Imports PackwizGUI.PackwizUtils.Utils
 Imports PackwizGUI.PackwizUtils.PackwizCommands
 Imports PackwizGUI.PackwizUtils
-Imports DevExpress.XtraRichEdit.Model
+Imports DevExpress.XtraGrid
 
 Public Class PackwizEditor
     Private Shared ReadOnly Logger As NLog.Logger = NLog.LogManager.GetCurrentClassLogger()
 
-    Public modsTable As New DataGridView
+    Public modsTable As GridControl
+    Public view As Views.Grid.GridView
+    Public modsList As New BindingList(Of _Mod)
+
     Dim loadScreen As New LoadScreen
     Dim LoadedItems As DataGridViewRow()
 
@@ -54,7 +57,9 @@ Public Class PackwizEditor
 
         LoadSettings()
 
-        modsTable = InitModsTable(My.Settings.AdvancedMode)
+        Dim tmp As List(Of Object) = InitModsTableDevExpress(modsList, My.Settings.AdvancedMode)
+        modsTable = tmp(0)
+        view = tmp(1)
 
         PanelControl1.Controls.Add(modsTable)
 
@@ -93,63 +98,18 @@ Public Class PackwizEditor
                 Exit For
             Else
                 i += 1
-                If item.Contains(".jar") Then
-                    Dim name As String = My.Computer.FileSystem.GetName(item).Replace(".jar", "")
-                    Dim tmp As New Dictionary(Of String, String) From {
-                                        {"project_id", ""},
-                                        {"project_type", ""},
-                                        {"slug", name},
-                                        {"author", ""},
-                                        {"title", name},
-                                        {"description", ""}
-                    }
-                    IndexMod(tmp)
-                    mods.Add(tmp)
+                Dim CurrentMod As Dictionary(Of String, String) = ModFileToDictionary(item, False)
+
+                Dim proj_id As String = CurrentMod("project_id")
+
+                If CheckIfModIsIndexed(proj_id) Then
+                    Dim _mod As _Mod = GetIndexedMod(proj_id)
+                    mods.Add(ModDictionaryBuilder(proj_id, "mod", _mod.Slug, _mod.Author, _mod.Title, _mod.Description))
                 Else
-                    Dim unsplitFileReader = My.Computer.FileSystem.ReadAllText(item)
-                    Dim fileReader = unsplitFileReader.Split(vbLf)
+                    Dim NewMod As Dictionary(Of String, String) = ModFileToDictionary(item)
+                    IndexMod(NewMod)
 
-                    Dim proj_id As String
-                    Dim projIdStartingLine As Integer = 11
-
-                    If unsplitFileReader.Contains("curseforge") Then
-                        projIdStartingLine = 12
-                    End If
-
-                    Try
-                        proj_id = fileReader(projIdStartingLine).Split(" = ")(1).Replace("""", "")
-                    Catch ex As Exception
-                        proj_id = fileReader(projIdStartingLine + 1).Split(" = ")(1).Replace("""", "")
-                    End Try
-
-                    If CheckIfModIsIndexed(proj_id) Then
-                        Dim _mod As _Mod = GetIndexedMod(proj_id)
-                        Dim tmp As New Dictionary(Of String, String) From {
-                                        {"project_id", proj_id},
-                                        {"project_type", "mod"},
-                                        {"slug", _mod.Slug},
-                                        {"author", _mod.Author},
-                                        {"title", _mod.Title},
-                                        {"description", _mod.Description}
-                        }
-                        mods.Add(tmp)
-                    Else
-                        Dim tmp As New Dictionary(Of String, String) From {
-                            {"project_id", proj_id},
-                            {"author", ""},
-                            {"title", fileReader(0).Split(" = ")(1).Replace("""", "")}
-                        }
-
-                        If unsplitFileReader.Contains("curseforge") Then
-                            Logger.Debug("test")
-                        End If
-
-                        Dim newMod = tmp.Concat(GetMissingModInfo(proj_id, client, IsNumeric(proj_id))).ToDictionary()
-
-                        IndexMod(newMod)
-
-                        mods.Add(newMod)
-                    End If
+                    mods.Add(NewMod)
                 End If
                 Logger.Debug(item)
 
@@ -166,15 +126,13 @@ Public Class PackwizEditor
     End Sub
 
     Private Sub BackgroundWorker1_RunWorkerCompleted(sender As Object, e As RunWorkerCompletedEventArgs) Handles BackgroundWorker1.RunWorkerCompleted
-        AddNewMods(modsTable, e.Result)
+        AddNewMods(modsList, e.Result)
 
         Me.Visible = True
 
         loadScreen.Close()
 
-        ReDim LoadedItems(modsTable.Rows.Count)
-
-        modsTable.Rows.CopyTo(LoadedItems, 0)
+        view.BestFitColumns()
     End Sub
 
     Private Sub ResetModCache(sender As Object, e As EventArgs) Handles ResetModCacheButton.Click
@@ -188,38 +146,15 @@ Public Class PackwizEditor
     End Sub
 
     Private Sub RemoveMod_ItemClick(sender As Object, e As DevExpress.XtraBars.ItemClickEventArgs) Handles RemoveMod.ItemClick
-        For Each Item As DataGridViewRow In modsTable.SelectedRows()
-            Logger.Debug($"Removing: {Item.Cells(1).Value}")
-            PackwizCommands.RemoveMod(Item.Cells(1).Value)
-            UnindexMod(Item.Cells(0).Value)
-            modsTable.Rows.Remove(Item)
-            modsTable.Refresh()
+        For Each Item As Integer In view.GetSelectedRows()
+            Dim row As _Mod = view.GetRow(Item)
+            Logger.Debug($"Removing: {row.Slug}")
+            PackwizCommands.RemoveMod(row.Slug)
+            UnindexMod(row.ModID)
+            modsList.Remove(row)
         Next
-    End Sub
-
-    Private Function GetRowBasedOnSlug(slug As String) As DataGridViewRow
-        For Each item As DataGridViewRow In modsTable.Rows
-            If item.Cells(1) Is slug Then
-                Return item
-            End If
-        Next
-
-        Return Nothing
-    End Function
-
-    Private Sub SearchEdit_EditValueChanged(sender As Object, e As EventArgs) Handles SearchEdit.EditValueChanged
-        Dim i As Integer = 0
-
-        Logger.Debug($"Total Number of Rows: {modsTable.Rows.Count}")
-
-        For Each item As _Mod In GetIndexedMods()._Mod.Values
-            'Dim rowIndex As Integer = modsTable.Rows.IndexOf(GetRowBasedOnSlug(item.Slug))
-
-            Logger.Debug($"Row {i}: {item.Title.Contains(SearchEdit.EditValue.ToString())}")
-
-            modsTable.Rows(i).Visible = item.Title.ToLower().Contains(SearchEdit.EditValue.ToString().ToLower())
-            i += 1
-        Next
+        modsTable.RefreshDataSource()
+        view.BestFitColumns()
     End Sub
 
     Public Sub ReloadMods()
@@ -227,11 +162,17 @@ Public Class PackwizEditor
 
         LoadSettings()
 
-        modsTable = InitModsTable(My.Settings.AdvancedMode)
+        modsList.Clear()
+
+        Dim tmp As List(Of Object) = InitModsTableDevExpress(modsList, My.Settings.AdvancedMode)
+        modsTable = tmp(0)
+        view = tmp(1)
 
         PanelControl1.Controls.Add(modsTable)
 
         InitializeMods(False)
+
+        view.BestFitColumns()
     End Sub
 
     Private Sub ReloadModsButton_Clicked(sender As Object, e As DevExpress.XtraBars.ItemClickEventArgs) Handles ReloadModsButton.ItemClick
@@ -239,9 +180,10 @@ Public Class PackwizEditor
     End Sub
 
     Private Sub UpdateModButton_ItemClick(sender As Object, e As DevExpress.XtraBars.ItemClickEventArgs) Handles UpdateModButton.ItemClick
-        For Each Item As DataGridViewRow In modsTable.SelectedRows()
-            Logger.Debug($"Updating: {Item.Cells(1).Value}")
-            UpdateMods(Item.Cells(1).Value)
+        For Each Item As Integer In view.GetSelectedRows()
+            Dim row As _Mod = view.GetRow(Item)
+            Logger.Debug($"Updating: {row.Slug}")
+            UpdateMods(row.Slug)
         Next
     End Sub
 
@@ -251,5 +193,9 @@ Public Class PackwizEditor
 
     Private Sub PackwizEditor_Closing(sender As Object, e As CancelEventArgs) Handles MyBase.Closing
         NLog.LogManager.Shutdown()
+    End Sub
+
+    Private Sub PackwizEditor_ResizeEnd(sender As Object, e As EventArgs) Handles Me.ResizeEnd
+        view.BestFitColumns()
     End Sub
 End Class

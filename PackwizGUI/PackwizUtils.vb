@@ -1,23 +1,62 @@
-﻿Imports System.ComponentModel
-Imports System.Net.Http
+﻿Imports System.Net.Http
 Imports System.Text.Json
 Imports Newtonsoft.Json
 Imports Newtonsoft.Json.Linq
 Imports JsonSerializer = System.Text.Json.JsonSerializer
+Imports Tomlyn
+Imports System.Runtime.Serialization
+Imports DevExpress.XtraGrid
+Imports System.ComponentModel
 
 Namespace PackwizUtils
-    Public Class PackwizUtils
-        Private Shared ReadOnly Logger As NLog.Logger = NLog.LogManager.GetCurrentClassLogger()
-        Private Shared ReadOnly options As New JsonSerializerOptions With {
+    Public Module Utils
+        Private ReadOnly Logger As NLog.Logger = NLog.LogManager.GetCurrentClassLogger()
+        Public ReadOnly options As New JsonSerializerOptions With {
                 .WriteIndented = True
             }
+
+        Public Function InitModsTableDevExpress(ByRef List As BindingList(Of _Mod), Optional EnableAdvancedMode As Boolean = False)
+            Dim modsTable As New GridControl With {
+                .DataSource = List,
+                .Dock = DockStyle.Fill,
+                .UseEmbeddedNavigator = True
+            }
+
+            Dim view As New Views.Grid.GridView()
+
+            With view
+                .OptionsBehavior.Editable = False
+                .OptionsSelection.UseIndicatorForSelection = True
+                .OptionsSelection.MultiSelect = True
+                .OptionsSelection.MultiSelectMode = Views.Grid.GridMultiSelectMode.RowSelect
+                .OptionsCustomization.AllowGroup = False
+                .OptionsView.ColumnAutoWidth = True
+            End With
+
+            modsTable.MainView = view
+
+            With modsTable.EmbeddedNavigator.Buttons
+                .BeginUpdate()
+                Try
+                    .Append.Visible = False
+                    .Remove.Visible = False
+                    .Edit.Visible = False
+                    .EndEdit.Visible = False
+                    .CancelEdit.Visible = False
+                Finally
+                    .EndUpdate()
+                End Try
+            End With
+
+            Return New List(Of Object) From {modsTable, view}
+        End Function
 
         ''' <summary>
         ''' Inits the mods table
         ''' </summary>
         ''' <param name="EnableAdvancedMode">Whether to sow the Mod ID and Slug Columns</param>
         ''' <returns>The initialized mods Table</returns>
-        Public Shared Function InitModsTable(Optional EnableAdvancedMode As Boolean = False) As DataGridView
+        Public Function InitModsTable(Optional EnableAdvancedMode As Boolean = False) As DataGridView
             Dim modsTable As New DataGridView
             With modsTable
                 .ColumnCount = 6
@@ -56,7 +95,7 @@ Namespace PackwizUtils
             Return modsTable
         End Function
 
-        Private Shared Function DecodeCurseforgeAPIKey(key As String) As String
+        Private Function DecodeCurseforgeAPIKey(key As String) As String
             Return Text.Encoding.UTF8.GetString(Convert.FromBase64String(key))
         End Function
 
@@ -65,14 +104,14 @@ Namespace PackwizUtils
         ''' </summary>
         ''' <param name="URI">the uri to send the get request to</param>
         ''' <returns></returns>
-        Public Shared Function GetRequestMessage(URI As String, Optional isCurseforge As Boolean = False) As HttpRequestMessage
+        Public Function GetRequestMessage(URI As String, Optional isCurseforge As Boolean = False) As HttpRequestMessage
             'User-Agent: github_username/project_name/1.56.0 (contact@launcher.com)
             Dim request = New HttpRequestMessage(HttpMethod.Get, URI)
 
             Dim ver = My.Application.Info.Version
 
             request.Headers.UserAgent.Add(New Headers.ProductInfoHeaderValue("PackwizGUI", $"{ver}"))
-            request.Headers.UserAgent.Add(New Headers.ProductInfoHeaderValue($"(RAMENtheNOODLES/PackwizGUI [cookiejar499@gmail.com])"))
+            request.Headers.UserAgent.Add(New Headers.ProductInfoHeaderValue($"(RAMENtheNOODLES/PackwizGUI [contact@cookiejar499.me])"))
             If isCurseforge Then
                 request.Headers.Add("x-api-key", DecodeCurseforgeAPIKey(My.Settings.CurseForgeAPIKey))
             End If
@@ -80,7 +119,7 @@ Namespace PackwizUtils
             Return request
         End Function
 
-        Public Shared Function GetMinecraftVersion() As String
+        Public Function GetMinecraftVersion() As String
             Return ReadFromFile($"{My.Settings.ProjectDirectory}/pack.toml").Split("minecraft = """)(1).Split("""")(0)
         End Function
 
@@ -91,7 +130,7 @@ Namespace PackwizUtils
         ''' <param name="client">The http client to use to send the request</param>
         ''' <param name="SearchQuery">The query used to search for a mod</param>
         ''' <returns></returns>
-        Public Shared Async Function DoSearch(modsTable As DataGridView, client As HttpClient,
+        Public Async Function DoSearch(modsTable As DataGridView, client As HttpClient,
                                               Optional SearchQuery As String = "", Optional Limit As Integer = 10, Optional Offset As Integer = 0) As Task
             Try
                 Dim firstHalf As ArrayList
@@ -126,7 +165,7 @@ Namespace PackwizUtils
         ''' <param name="client">The http client to use to send the request</param>
         ''' <param name="SearchQuery">The query used to search for a mod</param>
         ''' <see cref="DoSearch(DataGridView, HttpClient, String)"/>
-        Public Shared Async Sub RefreshMods(modsTable As DataGridView, client As HttpClient, Optional SearchQuery As String = "",
+        Public Async Sub RefreshMods(modsTable As DataGridView, client As HttpClient, Optional SearchQuery As String = "",
                                             Optional Limit As Integer = 10, Optional Offset As Integer = 0)
             modsTable.Rows.Clear()
             Await DoSearch(modsTable, client, SearchQuery, Limit, Offset)
@@ -141,7 +180,20 @@ Namespace PackwizUtils
         ''' <param name="title"></param>
         ''' <param name="author"></param>
         ''' <param name="description"></param>
-        Public Shared Sub AddNewMod(modsTable As DataGridView, modID As String, slug As String, title As String, author As String, description As String, Optional provider As String = "modrinth")
+        Public Sub AddNewMod(ModsList As BindingList(Of _Mod), modID As String, slug As String, title As String, author As String, description As String, Optional provider As String = "modrinth")
+            ModsList.Add(New _Mod(modID, slug, title, author, description))
+        End Sub
+
+        ''' <summary>
+        ''' Adds a new mod to the given table
+        ''' </summary>
+        ''' <param name="modsTable">The table to add the new mod to</param>
+        ''' <param name="modID">The `project_id` of the mod</param>
+        ''' <param name="slug"></param>
+        ''' <param name="title"></param>
+        ''' <param name="author"></param>
+        ''' <param name="description"></param>
+        Public Sub AddNewMod(modsTable As DataGridView, modID As String, slug As String, title As String, author As String, description As String, Optional provider As String = "modrinth")
             With modsTable.Rows(modsTable.Rows.Add())
                 .Cells(0).Value = modID
                 .Cells(1).Value = slug
@@ -158,7 +210,7 @@ Namespace PackwizUtils
         ''' <param name="modsTable">The table to add the new mods to</param>
         ''' <param name="mods">The list of mods to add to the table</param>
         ''' <see cref="AddNewMod(DataGridView, String, String, String, String, String)"/>
-        Public Shared Sub AddNewMods(modsTable As DataGridView, mods As ArrayList)
+        Public Sub AddNewMods(ByRef ModsList As BindingList(Of _Mod), mods As ArrayList)
             For Each item As Dictionary(Of String, String) In mods
                 Dim modID As String = item.Item("project_id")
                 Dim slug As String = item.Item("slug")
@@ -167,7 +219,27 @@ Namespace PackwizUtils
                 Dim description As String = item.Item("description")
                 Dim provider As String = item.GetValueOrDefault("provider", "modrinth")
 
-                PackwizUtils.AddNewMod(modsTable, modID, slug, title, author, description, provider)
+                ModsList.Add(New _Mod(modID, slug, title, author, description))
+                IndexMod(modID, slug, title, author, description)
+            Next
+        End Sub
+
+        ''' <summary>
+        ''' Adds an entire list of mods to the given table
+        ''' </summary>
+        ''' <param name="modsTable">The table to add the new mods to</param>
+        ''' <param name="mods">The list of mods to add to the table</param>
+        ''' <see cref="AddNewMod(DataGridView, String, String, String, String, String)"/>
+        Public Sub AddNewMods(modsTable As DataGridView, mods As ArrayList)
+            For Each item As Dictionary(Of String, String) In mods
+                Dim modID As String = item.Item("project_id")
+                Dim slug As String = item.Item("slug")
+                Dim title As String = item.Item("title")
+                Dim author As String = item.Item("author")
+                Dim description As String = item.Item("description")
+                Dim provider As String = item.GetValueOrDefault("provider", "modrinth")
+
+                AddNewMod(modsTable, modID, slug, title, author, description, provider)
                 IndexMod(modID, slug, title, author, description)
             Next
         End Sub
@@ -177,7 +249,7 @@ Namespace PackwizUtils
         ''' </summary>
         ''' <param name="JSON">The JSON object to parse</param>
         ''' <returns>A parsed list of mods</returns>
-        Public Shared Function ParseMods(JSON As JObject) As ArrayList
+        Public Function ParseMods(JSON As JObject) As ArrayList
             Dim mods As New ArrayList()
 
             Dim hits As JArray = JSON.SelectToken("$.hits")
@@ -204,7 +276,7 @@ Namespace PackwizUtils
         ''' </summary>
         ''' <param name="JSON">The JSON object to parse</param>
         ''' <returns>A parsed list of mods</returns>
-        Public Shared Function ParseModsFromCurseForge(JSON As JObject) As ArrayList
+        Public Function ParseModsFromCurseForge(JSON As JObject) As ArrayList
             Dim mods As New ArrayList()
 
             Dim hits As JArray = JSON.SelectToken("$.data")
@@ -232,7 +304,7 @@ Namespace PackwizUtils
         ''' <param name="URI">The uri to send the request to</param>
         ''' <param name="client">The Http Client to use to send the request</param>
         ''' <returns>The response as JSON</returns>
-        Public Shared Function ParseJson(URI As String, client As HttpClient, Optional isCurseforge As Boolean = False) As JObject
+        Public Function ParseJson(URI As String, client As HttpClient, Optional isCurseforge As Boolean = False) As JObject
             Dim responseBody As String
             Try
                 Dim tmp = client.Send(GetRequestMessage(URI, isCurseforge))
@@ -246,7 +318,7 @@ Namespace PackwizUtils
             Return Nothing
         End Function
 
-        Public Shared Function GetMissingModInfoFromCurseForge(ModID As String, client As HttpClient) As Dictionary(Of String, String)
+        Public Function GetMissingModInfoFromCurseForge(ModID As String, client As HttpClient) As Dictionary(Of String, String)
             Logger.Debug("Getting Missing Mod Info From CurseForge")
             Dim result = ParseJson($"https://api.curseforge.com/v1/mods/{ModID}", client, True)
             Try
@@ -275,7 +347,7 @@ Namespace PackwizUtils
         ''' <param name="client">The Http Client to use to send the request</param>
         ''' <param name="IsNumeric">Whether the ModID is only numbers (i.e. a curseforge project id)</param>
         ''' <returns>A dictionary containing the remaining missing information</returns>
-        Public Shared Function GetMissingModInfo(ModID As String, client As HttpClient, Optional IsNumeric As Boolean = False) As Dictionary(Of String, String)
+        Public Function GetMissingModInfo(ModID As String, client As HttpClient, Optional IsNumeric As Boolean = False) As Dictionary(Of String, String)
             If IsNumeric Then
                 Return GetMissingModInfoFromCurseForge(ModID, client)
             End If
@@ -302,7 +374,7 @@ Namespace PackwizUtils
         ''' </summary>
         ''' <param name="str">The key to strip</param>
         ''' <returns>The stripped key</returns>
-        Public Shared Function StripJSONKeyFromString(str As String) As String
+        Public Function StripJSONKeyFromString(str As String) As String
             Return str.Split(": ")(1).Replace("""", "")
         End Function
 
@@ -310,7 +382,7 @@ Namespace PackwizUtils
         ''' Returns a list of all of the files in the `/mods/` directory
         ''' </summary>
         ''' <returns>A list containing all of the mods in the project</returns>
-        Public Shared Function GetInstalledMods() As ObjectModel.ReadOnlyCollection(Of String)
+        Public Function GetInstalledMods() As ObjectModel.ReadOnlyCollection(Of String)
             If My.Settings.ProjectDirectory Is "" Then
                 Return Nothing
             End If
@@ -318,12 +390,12 @@ Namespace PackwizUtils
             Return My.Computer.FileSystem.GetFiles(My.Settings.ProjectDirectory & "/mods/")
         End Function
 
-        Public Shared Sub WriteToFile(file As String, text As String, Optional Append As Boolean = False)
+        Public Sub WriteToFile(file As String, text As String, Optional Append As Boolean = False)
             'My.Computer.FileSystem.SpecialDirectories.CurrentUserApplicationData
             My.Computer.FileSystem.WriteAllText(file, text, Append)
         End Sub
 
-        Public Shared Function ReadFromFile(file As String) As String
+        Public Function ReadFromFile(file As String) As String
             Try
                 Return My.Computer.FileSystem.ReadAllText(file)
             Catch ex As Exception
@@ -333,7 +405,7 @@ Namespace PackwizUtils
             Return ""
         End Function
 
-        Public Shared Function GetIndexedMods() As Mods
+        Public Function GetIndexedMods() As Mods
             Dim out = JsonConvert.DeserializeObject(Of Mods)(ReadFromFile(My.Settings.ProjectDirectory & My.Settings.ModIndexFileName))
 
             If out Is Nothing Then
@@ -343,7 +415,7 @@ Namespace PackwizUtils
             Return out
         End Function
 
-        Public Shared Function CheckIfModIsIndexed(modId As String) As Boolean
+        Public Function CheckIfModIsIndexed(modId As String) As Boolean
             Dim result = False
             Try
                 If GetIndexedMods() Is Nothing Then
@@ -360,7 +432,7 @@ Namespace PackwizUtils
 
         End Function
 
-        Public Shared Function GetIndexedMod(modId As String) As _Mod
+        Public Function GetIndexedMod(modId As String) As _Mod
             If Not CheckIfModIsIndexed(modId) Then
                 Return Nothing
             End If
@@ -368,12 +440,12 @@ Namespace PackwizUtils
             Return GetIndexedMods()._Mod.Item(modId)
         End Function
 
-        Public Shared Sub SerializeIndex(ModsIndex As Mods)
+        Public Sub SerializeIndex(ModsIndex As Mods)
             Dim jsonString = JsonSerializer.Serialize(ModsIndex, options)
             WriteToFile(My.Settings.ProjectDirectory & My.Settings.ModIndexFileName, jsonString)
         End Sub
 
-        Public Shared Sub AddToIndexedMods(ModToAdd As _Mod, modID As String)
+        Public Sub AddToIndexedMods(ModToAdd As _Mod, modID As String)
             Dim updatedMods As Mods = If(GetIndexedMods(), New Mods(New Dictionary(Of String, _Mod)))
 
             updatedMods._Mod.Add(modID, ModToAdd)
@@ -381,7 +453,7 @@ Namespace PackwizUtils
             SerializeIndex(updatedMods)
         End Sub
 
-        Public Shared Sub IndexMod(modID As String, slug As String, title As String, author As String, description As String)
+        Public Sub IndexMod(modID As String, slug As String, title As String, author As String, description As String)
             If CheckIfModIsIndexed(modID) Then
                 Return
             End If
@@ -391,11 +463,11 @@ Namespace PackwizUtils
             AddToIndexedMods(ModToIndex, modID)
         End Sub
 
-        Public Shared Sub IndexMod(ModToIndex As Dictionary(Of String, String))
+        Public Sub IndexMod(ModToIndex As Dictionary(Of String, String))
             IndexMod(ModToIndex("project_id"), ModToIndex("slug"), ModToIndex("title"), ModToIndex("author"), ModToIndex("description"))
         End Sub
 
-        Public Shared Sub UnindexMod(modId As String)
+        Public Sub UnindexMod(modId As String)
             If Not CheckIfModIsIndexed(modId) Then
                 Return
             End If
@@ -405,10 +477,10 @@ Namespace PackwizUtils
             NewModsIndex._Mod.Remove(modId)
             SerializeIndex(NewModsIndex)
         End Sub
-    End Class
+    End Module
 
     Public Class _Mod
-        Private Property ModID As String
+        Public Property ModID As String
         Public Property Slug As String
         Public Property Title As String
         Public Property Author As String
@@ -435,7 +507,7 @@ Namespace PackwizUtils
         Private ReadOnly Logger As NLog.Logger = NLog.LogManager.GetCurrentClassLogger()
 
         Public Sub RemoveMod(slug As String)
-            Call $"cd {My.Settings.ProjectDirectory} && {My.Settings.PackwizFile} remove {slug} -y; {My.Settings.PackwizFile} refresh".RunCMD()
+            Call $"cd {My.Settings.ProjectDirectory} && {My.Settings.PackwizFile} remove {slug} -y && {My.Settings.PackwizFile} refresh".RunCMD(False, True)
         End Sub
 
         Public Sub AddMod(slug As String, Optional fromModrinth As Boolean = True)
@@ -473,5 +545,182 @@ Namespace PackwizUtils
         Public Sub UpdateAllMods()
             Call $"cd {My.Settings.ProjectDirectory} && {My.Settings.PackwizFile} update -a -y".RunCMD()
         End Sub
+    End Module
+
+    Public Module TomlModels
+        Public MustInherit Class BaseIndexFile
+            ''' <summary>
+            ''' The name of the mod
+            ''' </summary>
+            Public Property Name As String
+            ''' <summary>
+            ''' The file name of the mod
+            ''' </summary>
+            Public Property Filename As String
+            ''' <summary>
+            ''' The side that the mod will be installed on (Client, Server, or Both)
+            ''' </summary>
+            Public Property Side As String
+            Public Property Pin As Boolean
+            Public Property Update As UpdateTable
+        End Class
+
+        Public MustInherit Class IndexOrDownloadTable
+            <DataMember(Name:="hash-format")>
+            Public Property HashFormat As String
+            Public Property Hash As String
+        End Class
+
+        Public Class ModrinthModIndexFile
+            Inherits BaseIndexFile
+
+            Public Property Download As DownloadTableModrinth
+        End Class
+
+        Public Class UpdateTable
+            Public Property Modrinth As UpdateTableModrinth
+            <DataMember(Name:="curseforge")>
+            Public Property CurseForge As UpdateTableCurseForge
+        End Class
+
+        Public Class DownloadTableModrinth
+            Inherits IndexOrDownloadTable
+
+            Public Property URL As String
+        End Class
+
+        Public Class UpdateTableModrinth
+            <DataMember(Name:="mod-id")>
+            Public Property ModId As String
+            Public Property Version As String
+        End Class
+
+        Public Class CurseForgeModIndexFile
+            Inherits BaseIndexFile
+
+            Public Property Download As DownloadTableCurseForge
+        End Class
+
+        Public Class DownloadTableCurseForge
+            Inherits IndexOrDownloadTable
+
+            Public Property Mode As String
+        End Class
+
+        Public Class UpdateTableCurseForge
+            <DataMember(Name:="file-id")>
+            Public Property FileId As Integer
+            <DataMember(Name:="project-id")>
+            Public Property ProjectId As Integer
+        End Class
+
+        ' Packwiz `Pack.toml`
+        Public Class PackFile
+            Public Property Name As String
+            Public Property Author As String
+            Public Property Version As String
+            <DataMember(Name:="pack-format")>
+            Public Property PackFormat As String
+            Public Property Index As PackFileIndexTable
+            Public Property Versions As PackFileVersionsTable
+        End Class
+
+        Public Class PackFileIndexTable
+            Inherits IndexOrDownloadTable
+
+            Public Property File As String
+        End Class
+
+        Public Class PackFileVersionsTable
+            Public Property Fabric As String
+            Public Property Minecraft As String
+        End Class
+    End Module
+
+    Public Module TomlUtils
+        Private ReadOnly Logger As NLog.Logger = NLog.LogManager.GetCurrentClassLogger()
+
+        Public Function ReadTomlFile(Of T As {Class, New})(file As String) As T
+            Dim TomlFile As String = ReadFromFile(file)
+
+            Logger.Debug($"Toml File: {TomlFile}")
+
+            Try
+                Return Toml.ToModel(Of T)(TomlFile)
+            Catch ex As Exception
+                Logger.Error(ex, "Could not read file...")
+                Return Nothing
+            End Try
+        End Function
+
+        Public Function ModDictionaryBuilder(ProjectId As String, ProjectType As String, Title As String, Optional IsModrinth As Boolean = True, Optional GetMissingInfo As Boolean = True)
+            Dim client As New HttpClient
+
+            If GetMissingInfo Then
+                Dim tmp As Dictionary(Of String, String)
+                tmp = GetMissingModInfo(ProjectId, client, Not IsModrinth)
+
+                Return ModDictionaryBuilder(ProjectId, ProjectType, tmp("slug"), "", Title, tmp("description"))
+            End If
+
+            Return ModDictionaryBuilder(ProjectId, ProjectType, "", "", Title, "")
+
+        End Function
+
+        Public Function ModDictionaryBuilder(ProjectId As String, ProjectType As String, Slug As String,
+                                             Author As String, Title As String, Description As String) As Dictionary(Of String, String)
+            Return New Dictionary(Of String, String) From {
+                                        {"project_id", ProjectId},
+                                        {"project_type", ProjectType},
+                                        {"slug", Slug},
+                                        {"author", Author},
+                                        {"title", Title},
+                                        {"description", Description}
+                    }
+        End Function
+
+        Public Enum FileFormats
+            CURSEFORGE
+            MODRINTH
+            JAR
+        End Enum
+
+        Public Function GetFileFormat(file As String) As FileFormats
+            If file.Contains(".jar") Then
+                Return FileFormats.JAR
+            End If
+
+            Return If(My.Computer.FileSystem.ReadAllText(file).Contains("curseforge"), FileFormats.CURSEFORGE, FileFormats.MODRINTH)
+        End Function
+
+        Public Function CurseForgeModFileToDictionary(file As String, Optional GetMissingInfo As Boolean = True) As Dictionary(Of String, String)
+            Dim ModToml As CurseForgeModIndexFile = ReadTomlFile(Of CurseForgeModIndexFile)(file)
+
+            Dim ProjectId As String = ModToml.Update.CurseForge.ProjectId
+            Dim Title As String = ModToml.Name
+
+            Return ModDictionaryBuilder(ProjectId, "mod", Title, False, GetMissingInfo)
+        End Function
+
+        Public Function ModrinthModFileToDictionary(file As String, Optional GetMissingInfo As Boolean = True) As Dictionary(Of String, String)
+            Dim ModToml As ModrinthModIndexFile = ReadTomlFile(Of ModrinthModIndexFile)(file)
+
+            Dim ProjectId As String = ModToml.Update.Modrinth.ModId
+            Dim Title As String = ModToml.Name
+
+            Return ModDictionaryBuilder(ProjectId, "mod", Title, GetMissingInfo:=GetMissingInfo)
+        End Function
+
+        Public Function ModFileToDictionary(file As String, Optional GetMissingInfo As Boolean = True) As Dictionary(Of String, String)
+            Select Case GetFileFormat(file)
+                Case FileFormats.CURSEFORGE
+                    Return CurseForgeModFileToDictionary(file, GetMissingInfo)
+                Case FileFormats.MODRINTH
+                    Return ModrinthModFileToDictionary(file, GetMissingInfo)
+                Case Else
+                    Dim name As String = My.Computer.FileSystem.GetName(file).Replace(".jar", "")
+                    Return ModDictionaryBuilder("", "mod", name, "", name, "")
+            End Select
+        End Function
     End Module
 End Namespace

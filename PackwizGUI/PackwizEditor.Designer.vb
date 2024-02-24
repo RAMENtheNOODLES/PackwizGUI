@@ -265,7 +265,6 @@ Partial Class PackwizEditor
         ' 
         ' RibbonStatusBar1
         ' 
-        RibbonStatusBar1.ItemLinks.Add(SearchEdit)
         RibbonStatusBar1.Location = New Point(0, 446)
         RibbonStatusBar1.Margin = New Padding(3, 2, 3, 2)
         RibbonStatusBar1.Name = "RibbonStatusBar1"
@@ -453,6 +452,17 @@ Partial Class PackwizEditor
     Friend WithEvents BarSubItem1 As DevExpress.XtraBars.BarSubItem
     Friend WithEvents UpdateModButton As DevExpress.XtraBars.BarButtonItem
     Friend WithEvents UpdateAllModsButton As DevExpress.XtraBars.BarButtonItem
+    Friend WithEvents GroupAndSortDockPanel1 As DevExpress.XtraReports.UserDesigner.GroupAndSortDockPanel
+    Friend WithEvents GroupAndSortDockPanel1_Container As DevExpress.XtraReports.UserDesigner.DesignControlContainer
+    Friend WithEvents ErrorListDockPanel1 As DevExpress.XtraReports.UserDesigner.ErrorListDockPanel
+    Friend WithEvents ErrorListDockPanel1_Container As DevExpress.XtraReports.UserDesigner.DesignControlContainer
+    Friend WithEvents panelContainer1 As DevExpress.XtraBars.Docking.DockPanel
+    Friend WithEvents panelContainer2 As DevExpress.XtraBars.Docking.DockPanel
+    Friend WithEvents panelContainer3 As DevExpress.XtraBars.Docking.DockPanel
+    Friend WithEvents PropertyGridDockPanel1 As DevExpress.XtraReports.UserDesigner.PropertyGridDockPanel
+    Friend WithEvents PropertyGridDockPanel1_Container As DevExpress.XtraReports.UserDesigner.DesignControlContainer
+    Friend WithEvents ReportGalleryDockPanel1 As DevExpress.XtraReports.UserDesigner.ReportGalleryDockPanel
+    Friend WithEvents ReportGalleryDockPanel1_Container As DevExpress.XtraReports.UserDesigner.DesignControlContainer
     'Friend WithEvents ModsPage As DevExpress.XtraBars.Navigation.TabNavigationPage
 
 End Class
