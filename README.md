@@ -22,4 +22,4 @@ Some planned features are:
 
 
 ## Installation
-For a guide on how to install PackwizGUI, check it out [here](packwiz.cookiejar499.me/install/)
+For a guide on how to install PackwizGUI, check it out [here](/install/)
