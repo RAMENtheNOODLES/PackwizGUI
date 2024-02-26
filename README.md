@@ -3,7 +3,7 @@ PackwizGUI is a ~Windows~ tool that wraps around the `packwiz` CLI to provide an
 
 It is written in `VB.net` using Microsoft Visual Studio.
 
-> Currently, as of 2/20/2024, PackwizGUI is in beta, and there may be plenty of bugs. If you have any issues please report them [here](https://github.com/RAMENtheNOODLES/PackwizGUI/issues).
+> Currently, as of 2/20/2024, PackwizGUI is in beta, and there may be plenty of bugs. If you have any issues or suggestions please put them [here](https://github.com/RAMENtheNOODLES/PackwizGUI/issues).
 
 ---
 
