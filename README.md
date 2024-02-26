@@ -1,5 +1,5 @@
 # What is PackwizGUI?
-PackwizGUI is a ~Windows~ tool that wraps around the `packwiz` CLI to provide an easier experience in using [packwiz](https://packwiz.infra.link/). 
+PackwizGUI is a tool that wraps around the `packwiz` CLI to provide an easier experience in using [packwiz](https://packwiz.infra.link/). 
 
 It is written in `VB.net` using Microsoft Visual Studio.
 
@@ -17,8 +17,9 @@ Some features include:
 
 ## What features are currently planned for PackwizGUI?
 Some planned features are:
-- Git integration
-- Ability to export the modpack
+- [ ] Git integration
+- [ ] Ability to export the modpack
+- [ ] Ability to initialize the modpack via a wizard
 
 
 ## Installation
