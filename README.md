@@ -3,7 +3,7 @@ PackwizGUI is a Windows tool that wraps around the `packwiz` CLI to provide an e
 
 It is written in `VB.net` using Microsoft Visual Studio.
 
-> Currently, as of 2/20/2024, PackwizGUI is in alpha, and there may be plenty of bugs. If you have any issues please report them [here](https://github.com/RAMENtheNOODLES/PackwizGUI/issues).
+> Currently, as of 2/20/2024, PackwizGUI is in beta, and there may be plenty of bugs. If you have any issues please report them [here](https://github.com/RAMENtheNOODLES/PackwizGUI/issues).
 
 ---
 
@@ -13,6 +13,7 @@ Some features include:
 - An interface to search for mods and install them via Modrinth and CurseForge
 - The ability to remove currently installed mods
 - A cache system to prevent the over-use of API calls
+- The ability to search currently installed mods
 
 ## What features are currently planned for PackwizGUI?
 Some planned features are:
