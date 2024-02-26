@@ -19,3 +19,7 @@ Some features include:
 Some planned features are:
 - Git integration
 - Ability to export the modpack
+
+
+## Installation
+For a guide on how to install PackwizGUI, check it out [here](packwiz.cookiejar499.me/install/)
