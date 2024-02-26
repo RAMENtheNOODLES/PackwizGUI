@@ -1,5 +1,5 @@
 # What is PackwizGUI?
-PackwizGUI is a Windows tool that wraps around the `packwiz` CLI to provide an easier experience in using [packwiz](https://packwiz.infra.link/). 
+PackwizGUI is a ~Windows~ tool that wraps around the `packwiz` CLI to provide an easier experience in using [packwiz](https://packwiz.infra.link/). 
 
 It is written in `VB.net` using Microsoft Visual Studio.
 
