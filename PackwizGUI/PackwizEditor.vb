@@ -63,6 +63,10 @@ Public Class PackwizEditor
 
         PanelControl1.Controls.Add(modsTable)
 
+        If My.Settings.PackwizFile Is "" Or My.Settings.ProjectDirectory Is "" Then
+            Return
+        End If
+
         InitializeMods()
     End Sub
 
