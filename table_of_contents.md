@@ -5,4 +5,4 @@ permalink: /TOC/
   [{{ page.title }}]({{ page.url }})
 
   
-{% end for %}
+{% endfor %}
