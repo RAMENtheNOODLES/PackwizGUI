@@ -174,6 +174,10 @@ Public Class PackwizEditor
 
         PanelControl1.Controls.Add(modsTable)
 
+        If My.Settings.PackwizFile Is "" Or My.Settings.ProjectDirectory Is "" Then
+            Return
+        End If
+
         InitializeMods(False)
 
         view.BestFitColumns()
@@ -199,7 +203,7 @@ Public Class PackwizEditor
         NLog.LogManager.Shutdown()
     End Sub
 
-    Private Sub PackwizEditor_ResizeEnd(sender As Object, e As EventArgs) Handles Me.ResizeEnd
+    Private Sub PackwizEditor_ResizeEnd(sender As Object, e As EventArgs) Handles MyBase.ResizeEnd
         view.BestFitColumns()
     End Sub
 End Class
