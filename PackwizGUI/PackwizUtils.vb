@@ -387,7 +387,12 @@ Namespace PackwizUtils
                 Return Nothing
             End If
 
-            Return My.Computer.FileSystem.GetFiles(My.Settings.ProjectDirectory & "/mods/")
+            Try
+                Return My.Computer.FileSystem.GetFiles(My.Settings.ProjectDirectory & "/mods/")
+            Catch ex As Exception
+                Logger.Warn($"Could not find mods folder in the project directory: {My.Settings.ProjectDirectory}")
+            End Try
+
         End Function
 
         Public Sub WriteToFile(file As String, text As String, Optional Append As Boolean = False)
@@ -505,6 +510,7 @@ Namespace PackwizUtils
 
     Public Module PackwizCommands
         Private ReadOnly Logger As NLog.Logger = NLog.LogManager.GetCurrentClassLogger()
+        Public ReadOnly COMMAND_HEADER As String = $"cd {My.Settings.ProjectDirectory} && {My.Settings.PackwizFile}"
 
         Public Sub RemoveMod(slug As String)
             Call $"cd {My.Settings.ProjectDirectory} && {My.Settings.PackwizFile} remove {slug} -y && {My.Settings.PackwizFile} refresh".RunCMD(False, True)
@@ -526,24 +532,34 @@ Namespace PackwizUtils
             Call $"cd {My.Settings.ProjectDirectory} && {My.Settings.PackwizFile} refresh".RunCMD(False, True)
         End Sub
 
-        Public Sub InitPackwiz()
-            Throw New NotImplementedException
+        Public Sub InitPackwiz(author As String, modpackName As String, modpackVersion As String,
+                               modloader As String, Optional modLoaderVersion As String = "", Optional minecraftVersion As String = "", Optional Reinit As Boolean = False)
+            Dim modEnding As String = If(String.IsNullOrWhiteSpace(modLoaderVersion), "-latest", $"-version {modLoaderVersion}")
+            Dim minecraftVerEnding As String = If(String.IsNullOrWhiteSpace(minecraftVersion), "-l", $"--mc-version {minecraftVersion}")
+
+            Logger.Debug($"Modloader: {modloader}")
+
+            Dim cmd As String = $"{COMMAND_HEADER} init --author {author} " &
+                $"--modloader {modloader} --{modloader}{modEnding} --version {modpackVersion} --name {modpackName} {minecraftVerEnding}{If(Reinit, " -r", "")}"
+
+            Logger.Info($"CMD: {cmd}")
+            Call cmd.RunCMD(True, True, True)
         End Sub
 
         Public Sub PinMod(slug As String)
-            Call $"cd {My.Settings.ProjectDirectory} && {My.Settings.PackwizFile} pin {slug}".RunCMD()
+            Call $"{COMMAND_HEADER} pin {slug}".RunCMD()
         End Sub
 
         Public Sub UnpinMod(slug As String)
-            Call $"cd {My.Settings.ProjectDirectory} && {My.Settings.PackwizFile} pin {slug}".RunCMD()
+            Call $"{COMMAND_HEADER} unpin {slug}".RunCMD()
         End Sub
 
         Public Sub UpdateMods(Optional slug As String = "")
-            Call $"cd {My.Settings.ProjectDirectory} && {My.Settings.PackwizFile} update {slug} -y".RunCMD()
+            Call $"{COMMAND_HEADER} update {slug} -y".RunCMD()
         End Sub
 
         Public Sub UpdateAllMods()
-            Call $"cd {My.Settings.ProjectDirectory} && {My.Settings.PackwizFile} update -a -y".RunCMD()
+            Call $"{COMMAND_HEADER} update -a -y".RunCMD()
         End Sub
     End Module
 

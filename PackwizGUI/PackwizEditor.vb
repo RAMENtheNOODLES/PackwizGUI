@@ -15,6 +15,8 @@ Public Class PackwizEditor
     Dim loadScreen As New LoadScreen
     Dim LoadedItems As DataGridViewRow()
 
+    Dim initWizard As InitializePackwizFrm
+
     Dim AddNewModFrm As AddNewMod
     Private Sub BarButtonItem1_ItemClick(sender As Object, e As DevExpress.XtraBars.ItemClickEventArgs) Handles AddNewModBtn.ItemClick
         AddNewModFrm = New AddNewMod
@@ -64,6 +66,17 @@ Public Class PackwizEditor
         PanelControl1.Controls.Add(modsTable)
 
         If My.Settings.PackwizFile Is "" Or My.Settings.ProjectDirectory Is "" Then
+            Dim result = MsgBox("Do you want to run the Init Wizard?", MsgBoxStyle.YesNoCancel, "Confirmation")
+
+            Select Case result
+                Case MsgBoxResult.Cancel
+                    Close()
+                Case MsgBoxResult.Yes
+                    initWizard = New InitializePackwizFrm With {
+                        .PackwizEditor = Me
+                    }
+                    initWizard.ShowDialog()
+            End Select
             Return
         End If
 
@@ -90,6 +103,12 @@ Public Class PackwizEditor
         Dim worker As BackgroundWorker = CType(sender, BackgroundWorker)
 
         Dim installedMods = GetInstalledMods()
+
+        If installedMods Is Nothing Then
+            e.Cancel = True
+            Return
+        End If
+
         Dim i As Integer = 0
 
         Dim client As New HttpClient
@@ -130,7 +149,10 @@ Public Class PackwizEditor
     End Sub
 
     Private Sub BackgroundWorker1_RunWorkerCompleted(sender As Object, e As RunWorkerCompletedEventArgs) Handles BackgroundWorker1.RunWorkerCompleted
-        AddNewMods(modsList, e.Result)
+        If Not e.Cancelled Then
+            AddNewMods(modsList, e.Result)
+        End If
+
 
         Me.Visible = True
 
@@ -205,5 +227,12 @@ Public Class PackwizEditor
 
     Private Sub PackwizEditor_ResizeEnd(sender As Object, e As EventArgs) Handles MyBase.ResizeEnd
         view.BestFitColumns()
+    End Sub
+
+    Private Sub RunInitWizardBtn_Click(sender As Object, e As EventArgs) Handles RunInitWizardBtn.Click
+        initWizard = New InitializePackwizFrm With {
+                        .PackwizEditor = Me
+                    }
+        initWizard.ShowDialog()
     End Sub
 End Class

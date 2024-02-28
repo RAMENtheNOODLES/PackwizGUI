@@ -35,6 +35,7 @@ Partial Class PackwizEditor
         Bar4 = New DevExpress.XtraBars.Bar()
         TabPane1 = New DevExpress.XtraBars.Navigation.TabPane()
         SettingsPage = New DevExpress.XtraBars.Navigation.TabNavigationPage()
+        RunInitWizardBtn = New DevExpress.XtraEditors.SimpleButton()
         AdvancedModeToggle = New DevExpress.XtraEditors.CheckEdit()
         RibbonControl1 = New DevExpress.XtraBars.Ribbon.RibbonControl()
         RemoveMod = New DevExpress.XtraBars.BarButtonItem()
@@ -120,6 +121,7 @@ Partial Class PackwizEditor
         ' SettingsPage
         ' 
         SettingsPage.Caption = "Settings"
+        SettingsPage.Controls.Add(RunInitWizardBtn)
         SettingsPage.Controls.Add(AdvancedModeToggle)
         SettingsPage.Controls.Add(ResetModCacheButton)
         SettingsPage.Controls.Add(OpenProjectDirectoryFolder)
@@ -132,6 +134,15 @@ Partial Class PackwizEditor
         SettingsPage.Margin = New Padding(3, 2, 3, 2)
         SettingsPage.Name = "SettingsPage"
         SettingsPage.Size = New Size(1035, 204)
+        ' 
+        ' RunInitWizardBtn
+        ' 
+        RunInitWizardBtn.ImageOptions.SvgImage = CType(resources.GetObject("RunInitWizardBtn.ImageOptions.SvgImage"), DevExpress.Utils.Svg.SvgImage)
+        RunInitWizardBtn.Location = New Point(856, 79)
+        RunInitWizardBtn.Name = "RunInitWizardBtn"
+        RunInitWizardBtn.Size = New Size(169, 29)
+        RunInitWizardBtn.TabIndex = 9
+        RunInitWizardBtn.Text = "Run Init Wizard"
         ' 
         ' AdvancedModeToggle
         ' 
@@ -463,6 +474,7 @@ Partial Class PackwizEditor
     Friend WithEvents PropertyGridDockPanel1_Container As DevExpress.XtraReports.UserDesigner.DesignControlContainer
     Friend WithEvents ReportGalleryDockPanel1 As DevExpress.XtraReports.UserDesigner.ReportGalleryDockPanel
     Friend WithEvents ReportGalleryDockPanel1_Container As DevExpress.XtraReports.UserDesigner.DesignControlContainer
+    Friend WithEvents RunInitWizardBtn As DevExpress.XtraEditors.SimpleButton
     'Friend WithEvents ModsPage As DevExpress.XtraBars.Navigation.TabNavigationPage
 
 End Class
