@@ -2,10 +2,11 @@
 permalink: /install/
 ---
 # How to install PackwizGUI
-- Download the `portable-v{version}-beta.zip` file from the latest release of packwiz [here](https://github.com/RAMENtheNOODLES/PackwizGUI/releases/latest)
+- Download the `{operating-system}-v{version}-beta.zip` file from the latest release of packwiz [here](https://github.com/RAMENtheNOODLES/PackwizGUI/releases/latest)
 - Unzip the file
 - Run the `PackwizGUI.exe` file
   - On Windows, it may show that the app is "unrecognized," just click `More info` and then click `run`
+  - On Linux / MacOS, you might need to install 
 - `PackwizGUI` should now start up!
 
 ## Next steps
