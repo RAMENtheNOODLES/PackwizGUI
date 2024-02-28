@@ -1,0 +1,337 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs">
+  <?define ComponentRules="OneToOne"?>
+  <!-- SourceDir instructs IsWiX the location of the directory that contains files for this wix library -->
+  <?define SourceDir="C:\Users\romme\source\repos\PackwizGUI\PackwizGUI\bin\publish"?>
+  <Fragment>
+    <ComponentGroup Id="PackwizGUIFiles">
+      <Component Directory="INSTALLLOCATION" Subdirectory="cs">
+        <File Source="$(var.SourceDir)\Windows\cs\System.Private.ServiceModel.resources.dll" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION" Subdirectory="de">
+        <File Source="$(var.SourceDir)\Windows\de\System.Private.ServiceModel.resources.dll" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\Windows\DevExpress.Charts.v22.2.Core.dll" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\Windows\DevExpress.CodeParser.v22.2.dll" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\Windows\DevExpress.Data.Desktop.v22.2.dll" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\Windows\DevExpress.Data.v22.2.dll" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\Windows\DevExpress.DataAccess.v22.2.dll" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\Windows\DevExpress.DataAccess.v22.2.UI.dll" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\Windows\DevExpress.DataVisualization.v22.2.Core.dll" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\Windows\DevExpress.Diagram.v22.2.Core.dll" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\Windows\DevExpress.Dialogs.v22.2.Core.dll" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\Windows\DevExpress.Drawing.v22.2.dll" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\Windows\DevExpress.Images.v22.2.dll" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\Windows\DevExpress.Map.v22.2.Core.dll" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\Windows\DevExpress.Mvvm.v22.2.dll" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\Windows\DevExpress.Office.v22.2.Core.dll" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\Windows\DevExpress.Pdf.v22.2.Core.dll" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\Windows\DevExpress.Pdf.v22.2.Drawing.dll" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\Windows\DevExpress.PivotGrid.v22.2.Core.dll" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\Windows\DevExpress.Printing.v22.2.Core.dll" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\Windows\DevExpress.RichEdit.v22.2.Core.dll" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\Windows\DevExpress.RichEdit.v22.2.Export.dll" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\Windows\DevExpress.Sparkline.v22.2.Core.dll" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\Windows\DevExpress.SpellChecker.v22.2.Core.dll" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\Windows\DevExpress.Spreadsheet.v22.2.Core.dll" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\Windows\DevExpress.TreeMap.v22.2.Core.dll" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\Windows\DevExpress.Utils.v22.2.dll" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\Windows\DevExpress.Utils.v22.2.UI.dll" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\Windows\DevExpress.Xpo.v22.2.dll" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\Windows\DevExpress.XtraBars.v22.2.dll" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\Windows\DevExpress.XtraCharts.v22.2.dll" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\Windows\DevExpress.XtraCharts.v22.2.Extensions.dll" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\Windows\DevExpress.XtraCharts.v22.2.UI.dll" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\Windows\DevExpress.XtraCharts.v22.2.Wizard.dll" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\Windows\DevExpress.XtraDiagram.v22.2.dll" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\Windows\DevExpress.XtraDialogs.v22.2.dll" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\Windows\DevExpress.XtraEditors.v22.2.dll" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\Windows\DevExpress.XtraGantt.v22.2.dll" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\Windows\DevExpress.XtraGauges.v22.2.Core.dll" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\Windows\DevExpress.XtraGauges.v22.2.Presets.dll" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\Windows\DevExpress.XtraGauges.v22.2.Win.dll" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\Windows\DevExpress.XtraGrid.v22.2.dll" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\Windows\DevExpress.XtraLayout.v22.2.dll" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\Windows\DevExpress.XtraMap.v22.2.dll" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\Windows\DevExpress.XtraNavBar.v22.2.dll" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\Windows\DevExpress.XtraPdfViewer.v22.2.dll" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\Windows\DevExpress.XtraPivotGrid.v22.2.dll" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\Windows\DevExpress.XtraPrinting.v22.2.dll" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\Windows\DevExpress.XtraReports.v22.2.dll" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\Windows\DevExpress.XtraReports.v22.2.Extensions.dll" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\Windows\DevExpress.XtraRichEdit.v22.2.dll" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\Windows\DevExpress.XtraScheduler.v22.2.Core.Desktop.dll" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\Windows\DevExpress.XtraScheduler.v22.2.Core.dll" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\Windows\DevExpress.XtraScheduler.v22.2.dll" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\Windows\DevExpress.XtraScheduler.v22.2.Extensions.dll" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\Windows\DevExpress.XtraScheduler.v22.2.Reporting.dll" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\Windows\DevExpress.XtraScheduler.v22.2.Reporting.Extensions.dll" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\Windows\DevExpress.XtraSpellChecker.v22.2.dll" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\Windows\DevExpress.XtraSpreadsheet.v22.2.dll" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\Windows\DevExpress.XtraTreeList.v22.2.dll" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\Windows\DevExpress.XtraTreeMap.v22.2.dll" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\Windows\DevExpress.XtraTreeMap.v22.2.UI.dll" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\Windows\DevExpress.XtraVerticalGrid.v22.2.dll" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\Windows\DevExpress.XtraWizard.v22.2.dll" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION" Subdirectory="es">
+        <File Source="$(var.SourceDir)\Windows\es\System.Private.ServiceModel.resources.dll" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION" Subdirectory="fr">
+        <File Source="$(var.SourceDir)\Windows\fr\System.Private.ServiceModel.resources.dll" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION" Subdirectory="it">
+        <File Source="$(var.SourceDir)\Windows\it\System.Private.ServiceModel.resources.dll" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION" Subdirectory="ja">
+        <File Source="$(var.SourceDir)\Windows\ja\System.Private.ServiceModel.resources.dll" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION" Subdirectory="ko">
+        <File Source="$(var.SourceDir)\Windows\ko\System.Private.ServiceModel.resources.dll" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\Windows\Microsoft.Bcl.AsyncInterfaces.dll" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\Windows\Microsoft.Extensions.Configuration.Abstractions.dll" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\Windows\Microsoft.Extensions.DependencyInjection.Abstractions.dll" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\Windows\Microsoft.Extensions.DependencyInjection.dll" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\Windows\Microsoft.Extensions.Logging.Abstractions.dll" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\Windows\Microsoft.Extensions.Logging.dll" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\Windows\Microsoft.Extensions.ObjectPool.dll" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\Windows\Microsoft.Extensions.Options.dll" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\Windows\Microsoft.Extensions.Primitives.dll" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\Windows\Newtonsoft.Json.dll" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\Windows\NLog.config" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\Windows\NLog.dll" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\Windows\NLog.Extensions.Logging.dll" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\Windows\PackwizGUI.deps.json" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\Windows\PackwizGUI.dll" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\Windows\PackwizGUI.dll.config" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\Windows\PackwizGUI.exe" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\Windows\PackwizGUI.pdb" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\Windows\PackwizGUI.runtimeconfig.json" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION" Subdirectory="pl">
+        <File Source="$(var.SourceDir)\Windows\pl\System.Private.ServiceModel.resources.dll" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION" Subdirectory="pt-BR">
+        <File Source="$(var.SourceDir)\Windows\pt-BR\System.Private.ServiceModel.resources.dll" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION" Subdirectory="ru">
+        <File Source="$(var.SourceDir)\Windows\ru\System.Private.ServiceModel.resources.dll" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\Windows\sni.dll" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\Windows\System.ComponentModel.Composition.dll" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\Windows\System.Data.Odbc.dll" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\Windows\System.Data.OleDb.dll" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\Windows\System.Data.SqlClient.dll" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\Windows\System.IO.Ports.dll" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\Windows\System.Private.ServiceModel.dll" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\Windows\System.ServiceModel.dll" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\Windows\System.ServiceModel.Http.dll" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\Windows\System.ServiceModel.NetTcp.dll" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\Windows\System.ServiceModel.Primitives.dll" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\Windows\System.ServiceModel.Security.dll" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\Windows\System.ServiceModel.Syndication.dll" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\Windows\System.ServiceProcess.ServiceController.dll" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\Windows\Tomlyn.dll" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION" Subdirectory="tr">
+        <File Source="$(var.SourceDir)\Windows\tr\System.Private.ServiceModel.resources.dll" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION" Subdirectory="zh-Hans">
+        <File Source="$(var.SourceDir)\Windows\zh-Hans\System.Private.ServiceModel.resources.dll" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION" Subdirectory="zh-Hant">
+        <File Source="$(var.SourceDir)\Windows\zh-Hant\System.Private.ServiceModel.resources.dll" KeyPath="yes" />
+      </Component>
+    </ComponentGroup>
+  </Fragment>
+</Wix>

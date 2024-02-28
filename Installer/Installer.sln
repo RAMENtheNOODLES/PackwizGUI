@@ -1,0 +1,37 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.8.34408.163
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{B7DD6F7E-DEF8-4E67-B5B7-07EF123DB6F0}") = "PackwizGUI", "PackwizGUI\PackwizGUI.wixproj", "{AF75410C-232B-46DB-BD60-9BD8B9ECFA52}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|ARM64 = Debug|ARM64
+		Debug|x64 = Debug|x64
+		Debug|x86 = Debug|x86
+		Release|ARM64 = Release|ARM64
+		Release|x64 = Release|x64
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{AF75410C-232B-46DB-BD60-9BD8B9ECFA52}.Debug|ARM64.ActiveCfg = Debug|ARM64
+		{AF75410C-232B-46DB-BD60-9BD8B9ECFA52}.Debug|ARM64.Build.0 = Debug|ARM64
+		{AF75410C-232B-46DB-BD60-9BD8B9ECFA52}.Debug|x64.ActiveCfg = Debug|x64
+		{AF75410C-232B-46DB-BD60-9BD8B9ECFA52}.Debug|x64.Build.0 = Debug|x64
+		{AF75410C-232B-46DB-BD60-9BD8B9ECFA52}.Debug|x86.ActiveCfg = Debug|x86
+		{AF75410C-232B-46DB-BD60-9BD8B9ECFA52}.Debug|x86.Build.0 = Debug|x86
+		{AF75410C-232B-46DB-BD60-9BD8B9ECFA52}.Release|ARM64.ActiveCfg = Release|ARM64
+		{AF75410C-232B-46DB-BD60-9BD8B9ECFA52}.Release|ARM64.Build.0 = Release|ARM64
+		{AF75410C-232B-46DB-BD60-9BD8B9ECFA52}.Release|x64.ActiveCfg = Release|x64
+		{AF75410C-232B-46DB-BD60-9BD8B9ECFA52}.Release|x64.Build.0 = Release|x64
+		{AF75410C-232B-46DB-BD60-9BD8B9ECFA52}.Release|x86.ActiveCfg = Release|x86
+		{AF75410C-232B-46DB-BD60-9BD8B9ECFA52}.Release|x86.Build.0 = Release|x86
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {746B5006-45B7-4713-9A2C-DA3E719F6B78}
+	EndGlobalSection
+EndGlobal
