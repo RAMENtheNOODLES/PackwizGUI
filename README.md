@@ -1,3 +1,8 @@
+> [!important]
+> PackwizGUI for `VB.net` is currently not recommended for use.
+> 
+> Please checkout the new PackwizGUI [here](https://github.com/RAMENtheNOODLES/packwizgui-electron)
+
 # What is PackwizGUI?
 PackwizGUI is a tool that wraps around the `packwiz` CLI to provide an easier experience in using [packwiz](https://packwiz.infra.link/). 
 
